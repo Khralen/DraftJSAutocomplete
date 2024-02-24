@@ -1,22 +1,15 @@
-import logo from './logo.svg';
-import './App.css';
+import './App.js';
+import MentionTrigger from './components/MentionTrigger.js';
+import MyDraftJSComponent from './components/MyDraftJSComponent.js';
+import SingleLine from './components/SingleLine.js';
+//import DraftJsMentions from './components/DraftJsMentions/DraftJsMentions.js'
 
 function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+        <h1>Suggestions helper plugin</h1>
+        <SingleLine />
       </header>
     </div>
   );

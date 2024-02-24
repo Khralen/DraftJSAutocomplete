@@ -1,0 +1,143 @@
+const interprets = [
+    {
+      "id": "Austin1",
+      "display": "Austin123",
+      "album1": {
+        "id":"001",
+        "display":"001",
+        "song1": {
+          "id": "001",
+          "display": "song1Display"
+        },
+        "song2": {
+          "id": "002",
+          "display": "song2Display"
+        },
+        "song3": {
+          "id": "003",
+          "display": "song3Display"
+        }
+      }
+    },
+    {
+      "id": "Alfred",
+      "display": "Alfred",
+      "album1": {
+        "id":"001",
+        "display":"001",
+        "song1": {
+          "id": "001",
+          "display": "song1Display"
+        },
+        "song2": {
+          "id": "002",
+          "display": "song2Display"
+        },
+        "song3": {
+          "id": "003",
+          "display": "song3Display"
+        }
+      }
+    },
+    {
+      "id": "Kevin",
+      "display": "Kevin",
+      "album1": {
+        "id":"001",
+        "display":"001",
+        "song1": {
+          "id": "001",
+          "display": "song1Display"
+        },
+        "song2": {
+          "id": "002",
+          "display": "song2Display"
+        },
+        "song3": {
+          "id": "003",
+          "display": "song3Display"
+        }
+      }
+    },
+    {
+      "id": "Brutus",
+      "display": "Brutus",
+      "album1": {
+        "id":"001",
+        "display":"001",
+        "song1": {
+          "id": "001",
+          "display": "song1Display"
+        },
+        "song2": {
+          "id": "002",
+          "display": "song2Display"
+        },
+        "song3": {
+          "id": "003",
+          "display": "song3Display"
+        }
+      }
+    },
+    {
+      "id": "Donald",
+      "display": "Donald",
+      "album1": {
+        "id":"001",
+        "display":"001",
+        "song1": {
+          "id": "001",
+          "display": "song1Display"
+        },
+        "song2": {
+          "id": "002",
+          "display": "song2Display"
+        },
+        "song3": {
+          "id": "003",
+          "display": "song3Display"
+        }
+      }
+    },
+    {
+      "id": "Jack",
+      "display": "Jack",
+      "album1": {
+        "id":"001",
+        "display":"001",
+        "song1": {
+          "id": "001",
+          "display": "song1Display"
+        },
+        "song2": {
+          "id": "002",
+          "display": "song2Display"
+        },
+        "song3": {
+          "id": "003",
+          "display": "song3Display"
+        }
+      }
+    },
+    {
+      "id": "John",
+      "display": "John",
+      "album1": {
+        "id":"001",
+        "display":"001",
+        "song1": {
+          "id": "001",
+          "display": "song1Display"
+        },
+        "song2": {
+          "id": "002",
+          "display": "song2Display"
+        },
+        "song3": {
+          "id": "003",
+          "display": "song3Display"
+        }
+      }
+    }
+] 
+export default interprets;

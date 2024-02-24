@@ -1,0 +1,1 @@
+var users = {Peter: "Peter", Austin: "Austin", Jack: "Jack", John: "John"}

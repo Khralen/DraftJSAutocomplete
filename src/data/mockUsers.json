@@ -1,0 +1,42 @@
+[
+    {
+      "id": "Austin",
+      "display": "Austin",
+      "albums": {
+        "album1": {
+          "songs":{
+            "1":"AustinSong1", "2":"AustinSong2"  
+          }
+        }, 
+        "album2": {
+          "songs":{
+            "1":"Song1", "2":"Song2"  
+          }
+        }
+      }
+    },
+    {
+      "id": "Alfred",
+      "display": "Alfred"
+    },
+    {
+      "id": "Brutus",
+      "display": "Brutus"
+    },
+    {
+      "id": "Cavin",
+      "display": "Cavin"
+    },
+    {
+      "id": "Donald",
+      "display": "Donald"
+    },
+    {
+      "id": "Jack",
+      "display": "Jack"
+    },
+    {
+      "id": "John",
+      "display": "John"
+    }
+] 

@@ -1,0 +1,1 @@
+var things = {tablet: "tablet", computer: "computer", meat: "meat", cucumber: "cucumber", pillow: "pillow", treasure: "treasure", teeth: "teeth"}
