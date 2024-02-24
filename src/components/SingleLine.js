@@ -340,7 +340,7 @@ const extractMentions = (input) => {
     const selectedMention = '';
     const interpretIndex = interprets.findIndex(interpret => interpret.id === lastMention); //targetInterpretId
     //const albumIndex = interprets.findIndex(album => album.id === lastMention);
-    const interpretId = "Austin1";
+    //const interpretId = "Austin1";
     //const interpretDisplay = interprets[interpretIndex]['display']; //interpret.id
     //const interpretDisplay = interprets[0]['display'];
     //const interpret = { id: interpret[0], display: interprets[interpret[0]] };
