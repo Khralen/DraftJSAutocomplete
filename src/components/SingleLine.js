@@ -6,9 +6,9 @@ import defaultMentionStyle from "./defaultMentionStyle";
 //import AutoComplete from "./AutoComplete.js";
 //import mockUsers from "../data/mockUsers.json";
 //import mockThigs from "../data/mockThings.json";  
-import mockUsers from "../data/old/mockUsers.js";
-import mockThigs from "../data/old/mockThings.js";
-import dataSongs from "../data/dataSongsMain1.js";
+//import mockUsers from "../data/old/mockUsers.js";
+//import mockThigs from "../data/old/mockThings.js";
+//import dataSongs from "../data/dataSongsMain1.js";
 import interprets from "../data/dataSongsMain1.js";
 
 
@@ -84,11 +84,11 @@ const SingleLine = () => {
   const [type, addType] = useState([]);
   //const [mentionsLength, setLength] = useState(0);
   const [inputLength, setInputLength] = useState(0);
-  const [inputText, setInputText] = useState('');
+  //const [inputText, setInputText] = useState('');
   //const [previousMention, setPreviousMention] = useState();
   const [mention, setMention] = useState(null);
   const [mentionTrigger, setTrigger] = useState("@");
-  const [isThereMention, setBool] = useState(false);
+  //const [isThereMention, setBool] = useState(false);
   const [mentionsLength, setML] = useState(0);
   const [isLast, setLast] = useState(false);
   console.log("trigger(render): ", mentionTrigger);
@@ -133,7 +133,7 @@ useEffect (() => {
   useEffect(() => {
     const handleKeyDown = (event) => {
       const evKey = event.key;
-      const a = event;
+      //const a = event;
       //console.log("event: ", event);
       if (evKey === 'ArrowRight') {
         //console.log('Right arrow key pressed');
@@ -166,22 +166,22 @@ useEffect (() => {
     var input = e.target.value;
     console.log("-->arrive: input: ", input);
     const inptLength = input.length;
-    const trigger = mentionTrigger;
+    //const trigger = mentionTrigger;
     var mentions = null;
     
     // Check if the mention pattern exists in the input
     if (/.\[[^\]]+\]\([^)]+\)/g.test(input)) {
       // Replace '.' with '@' in the mentions
-      input = input.replaceAll(/.\[([^\]]+)\]\(([^)]+)\)/g, '@[$1]($2)' );
+      input = input.replaceAll(/.\[([^\]]+)\]\(([^)]+)\)/g, '@[$1]($2)');
       console.log("--> replaced by @ :", input);
       //setTrigger('.');
     }
     e.target.value = input;
-    setInputText(input);
+    //setInputText(input);
     // Extract and pass mentions to onAddMention function
   const mentionsTmp = extractMentions(input);
   mentionsTmp.forEach(mention1 => {
-    onAddMention(mention1);
+    onAddMention('.' + mention1);
     //setMentions((prevMentions) => [...prevMentions, mention]);
     //setMentions([...mentions, mention1]);
     //setMentions(() => [mentionsTmp.id, mentionsTmp.display  ] );
@@ -218,15 +218,13 @@ useEffect (() => {
       //setDataSource(mockUsers);
       //setDataSource(interprets);
       setDataSource( () => [albumId, albumDisplay]);
-      setBool(false);
+      //setBool(false);
       //console.log("Mentions Length: ", mentions.length);
       console.log("@ - back to default...");
       if (prevPrevValue !== ' ') {
         setTrigger("@");
         setDataSource(interprets);
       }
-    } else {
-      setBool(true);
     }
     if (inptLength === 0) {
       setTrigger("@");
@@ -237,6 +235,7 @@ useEffect (() => {
       setTrigger("@");
       setDataSource(interprets);
     }
+
     if (isPrevCharSpace || isPrevCharEmpty || isEmptyInput) {
       if (isCurrentTriggerAt && isPrevCharAt ) {
         if (isPrevCharAt) {
@@ -246,21 +245,29 @@ useEffect (() => {
       } 
       if (isPrevCharSpace) {
         setTrigger("");
-        setDataSource([]); console.log("-----(trigger empty 1)");
-        if (isPrevPrevSpace) {
-          setTrigger("");
-          setDataSource([]);
+        setDataSource([]);
+        if (!Array.isArray(allMentions) || allMentions === null) {
+          setTrigger("@");
+          setDataSource(interprets);
+        } else {
+          if (isPrevPrevSpace || isPrevCharSpace) {
+            setTrigger("");
+            setDataSource([]);
+          } else {
+            setTrigger(".");
+            setDataSource(interprets);
+          }
         }
+        
       }
       if (prevValue === " " && prevPrevValue === ")") {
-        setTrigger(""); console.log("-----(trigger empty 2)");
+        setTrigger("");
         setDataSource([]);
       } 
     } else {  
       if (isPrevCharDot && !isPrevPrevSpace && !isPrevCharSpace) {
-        setTrigger("."); console.log("-----(set 2)");
+        setTrigger(".");
         setDataSource(filteredArray); 
-        //setDataSource(mockThigs);
       }
     } 
 
@@ -302,6 +309,7 @@ const extractMentions = (input) => {
       const result = a.substring(i2+1,i3);
       setMentions(result);
       //addType();
+      if (value.includes(".")) return '.' + result; 
       return result;
     });
     //
@@ -323,7 +331,7 @@ const extractMentions = (input) => {
       */
     //
     return arr.filter(a => a)
-  },[value, inputText])
+  },[value])
   
 
   useEffect( ()=> {
@@ -337,7 +345,7 @@ const extractMentions = (input) => {
     const lastMention = mentions; //interpret.id
     const mentionsLen = allMentions.length;
     const lastMentionArr = allMentions[mentionsLen - 1];
-    const selectedMention = '';
+    //const selectedMention = '';
     const interpretIndex = interprets.findIndex(interpret => interpret.id === lastMention); //targetInterpretId
     //const albumIndex = interprets.findIndex(album => album.id === lastMention);
     //const interpretId = "Austin1";
@@ -399,7 +407,7 @@ const extractMentions = (input) => {
     setMention(mention);
     //setMentions([...mentions, mention]);
     //setMentions(mentions.concat(mention));
-    setMentions(prevMentions => [...prevMentions, mention]);
+    setMentions(prevMentions => [...prevMentions, '.' + mention]);
     setML(mentionsLength + 1);
     addType(mention.type);
     writeAllMentions();
