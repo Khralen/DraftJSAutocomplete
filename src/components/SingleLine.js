@@ -186,8 +186,8 @@ useEffect (() => {
     //setMentions([...mentions, mention1]);
     //setMentions(() => [mentionsTmp.id, mentionsTmp.display  ] );
   });
-
-    const isEmptyInput = e.target.value.trim() === "";
+    const trimInput = e.target.value.trim();
+    const isEmptyInput = trimInput === "";
     // Check if the previous character is space or it is the first character in the textbox
     const isPrevCharSpace = input.slice(-1) === " ";
     const isPrevCharEmpty = inputLength === 0;
@@ -246,9 +246,9 @@ useEffect (() => {
       if (isPrevCharSpace) {
         setTrigger("");
         setDataSource([]);
-        if (!Array.isArray(allMentions) || allMentions === null) {
-          setTrigger("@");
-          setDataSource(interprets);
+        if (trimInput === '@') {
+          //setTrigger("@");
+          //setDataSource(interprets); console.log('99999999999999999999');
         } else {
           if (isPrevPrevSpace || isPrevCharSpace) {
             setTrigger("");
@@ -270,6 +270,10 @@ useEffect (() => {
         setDataSource(filteredArray); 
       }
     } 
+    if ( allMentions.length === 0) { //trimInput === '@'
+      setTrigger("@");
+      setDataSource(interprets); console.log('99999999999999999999');
+    }
 
     if (inptLength < inputLength) {
       //najdi smazanou mention a odstran ji z pole mentions
