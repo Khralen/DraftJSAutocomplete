@@ -9,7 +9,7 @@ import defaultMentionStyle from "./defaultMentionStyle";
 //import mockUsers from "../data/old/mockUsers.js";
 //import mockThigs from "../data/old/mockThings.js";
 //import dataSongs from "../data/dataSongsMain1.js";
-import interprets from "../data/dataSongsMain1.js";
+import inputData from "../data/dataSongsMain1.js";
 
 
 //const data = mockUsers;
@@ -43,14 +43,15 @@ console.log("list", users);
 //trigger[zobrazeni](ulozene) --> display, id
 
 
-const interpretId = interprets[0]['id'];
+/*const interpretId = interprets[0]['id'];
 const interpretDisplay = interprets[0]['display'];
 const albumId = interprets[2]['album2']['id'];
-//const albumDisplay = interprets[2]['album2']['display'];
+const albumDisplay = interprets[2]['album2']['display'];
 const albumNumber = 2;
 const albumDisplay = interprets[albumNumber]['album' + albumNumber]['display'];
 const songId = interprets[0]['album1']['song1']['id'];
 const songDisplay = interprets[0]['album1']['song1']['display'];
+*/
 /*
 // Define an array to store objects with id and display attributes
 const dataArray = [];
@@ -76,6 +77,7 @@ interprets.forEach(interpret => {
 
 const SingleLine = () => {
   //const map = new Map([]);
+  const [interprets, setInterprets] = useState([]);
   const [filteredArray, setFileteredArray] = useState([]);
   const [data, setDataSource] = useState(); //mockUsers
   const [value, setValue] = useState("");
@@ -95,18 +97,24 @@ const SingleLine = () => {
   //console.log("mentionsLength: ", mentionsLength);
 
 
+useEffect (() => {
+  setInterprets(inputData);
+  console.log("DATA LOAD 1: ", inputData);
+}, []);
 
 useEffect (() => {
   setDataSource(interprets); //mockUsers
+  console.log("DATA LOAD 2: ", interprets);
+  /*
   console.log("interpretId:  ", interpretId);
   console.log("interpretDisplay:  ", interpretDisplay);
   console.log("isplay ", albumId);
   console.log("albumDisplay: ", albumDisplay);
   console.log("songId ", songId);
   console.log("songDisplay: ", songDisplay);
-  
+  */
   //setDataSource( () => [albumId, albumDisplay]);
-}, []);
+}, [interprets]);
 /*
 useEffect (() => {
   writeAllMentions();
@@ -160,6 +168,7 @@ useEffect (() => {
 
 
   const onChange = (e) => {
+    console.log("DATA LOAD 3: ", interprets);
     //console.log("Onchangeeeeee:", e);
     setValue(e.target.value);
     
@@ -170,6 +179,7 @@ useEffect (() => {
     var mentions = null;
     
     // Check if the mention pattern exists in the input
+    /*
     if (/.\[[^\]]+\]\([^)]+\)/g.test(input)) {
       // Replace '.' with '@' in the mentions
       input = input.replaceAll(/.\[([^\]]+)\]\(([^)]+)\)/g, '@[$1]($2)');
@@ -177,11 +187,21 @@ useEffect (() => {
       //setTrigger('.');
     }
     e.target.value = input;
+    //input = "@[Austin123](Austin1)@[album-0](album-0)@[song1Display-1](song-1)";
+    // Use regular expression to match mentions in the input string
+    const modifiedInput = input.replace(/@\[(.*?)\]\((.*?)\)/g, ".$&");
+    console.log("Modified input:", modifiedInput);
+
+    e.target.value = modifiedInput;
+    input = modifiedInput;
+    */
     //setInputText(input);
     // Extract and pass mentions to onAddMention function
   const mentionsTmp = extractMentions(input);
+  console.log("mentionsTmp: ", mentionsTmp);
   mentionsTmp.forEach(mention1 => {
-    onAddMention('.' + mention1);
+    onAddMention(mention1);
+    console.log("mention1: ", mention1.id); //mention1.display
     //setMentions((prevMentions) => [...prevMentions, mention]);
     //setMentions([...mentions, mention1]);
     //setMentions(() => [mentionsTmp.id, mentionsTmp.display  ] );
@@ -217,7 +237,7 @@ useEffect (() => {
       setTrigger("@");
       //setDataSource(mockUsers);
       //setDataSource(interprets);
-      setDataSource( () => [albumId, albumDisplay]);
+      //setDataSource( () => [albumId, albumDisplay]);
       //setBool(false);
       //console.log("Mentions Length: ", mentions.length);
       console.log("@ - back to default...");
@@ -246,19 +266,13 @@ useEffect (() => {
       if (isPrevCharSpace) {
         setTrigger("");
         setDataSource([]);
-        if (trimInput === '@') {
-          //setTrigger("@");
-          //setDataSource(interprets); console.log('99999999999999999999');
+        if (isPrevPrevSpace || isPrevCharSpace) {
+          setTrigger("");
+          setDataSource([]);
         } else {
-          if (isPrevPrevSpace || isPrevCharSpace) {
-            setTrigger("");
-            setDataSource([]);
-          } else {
-            setTrigger(".");
-            setDataSource(interprets);
-          }
+          setTrigger(".");
+          setDataSource(filteredArray);//interprets
         }
-        
       }
       if (prevValue === " " && prevPrevValue === ")") {
         setTrigger("");
@@ -270,9 +284,9 @@ useEffect (() => {
         setDataSource(filteredArray); 
       }
     } 
-    if ( allMentions.length === 0) { //trimInput === '@'
+    if (allMentions.length === 0) { //trimInput === '@'
       setTrigger("@");
-      setDataSource(interprets); console.log('99999999999999999999');
+      setDataSource(interprets);
     }
 
     if (inptLength < inputLength) {
@@ -290,19 +304,30 @@ const extractMentions = (input) => {
   const mentions = [];
   const mentionPattern = /@\[([^\]]+)\]\(([^)]+)\)/g;
   let match;
+  let mention;
   while ((match = mentionPattern.exec(input)) !== null) {
-    const mention = {
-      id: match[2], // Assuming the id is the content inside the parenthesis
-      display: match[1] // Assuming the display name is the content inside the square brackets
-    };
+    //console.log("match: ", match);
+    if (allMentions.length === 0) {
+      mention = {
+        id: match[2], // Assuming the id is the content inside the parenthesis
+        display: match[1] // Assuming the display name is the content inside the square brackets
+      };
+      console.log("mention1234: ", mention);
+    } else {
+      mention = {
+        id: match[2],
+        display: match[1] //'.'+
+      };
+      console.log("mentionTEST: ", mention);
+    }
     mentions.push(mention);
   }
   return mentions;
 };
   
 
-  const allMentions = useMemo(()=> {
-    let a = value.split(/[@:.]/); ///[@:.]/
+  const allMentions = useMemo( ()=> {
+    let a = value.split(/[@]/); //let a = value.split(/[@:.]/);
     a = a.filter((a) => a.startsWith("[") && a.includes("]"))
     const arr = a.map((a)=>{
       if(!a.startsWith("[")) return null;
@@ -312,28 +337,9 @@ const extractMentions = (input) => {
       if(!(i1+1 === i2 && i2+1<i3 && i1>1)) return null;
       const result = a.substring(i2+1,i3);
       setMentions(result);
-      //addType();
-      if (value.includes(".")) return '.' + result; 
+      if (value.includes(".")) return result; 
       return result;
     });
-    //
-    /*
-        var input = e.target.value;
-        // Check if the mention pattern exists in the input
-        if (/.\[[^\]]+\]\([^)]+\)/g.test(input)) {
-          // Replace '.' with '@' in the mentions
-          input = input.replaceAll(/.\[([^\]]+)\]\(([^)]+)\)/g, '@[$1]($2)' );
-          console.log("--> replaced by @ :", input);
-        }
-        e.target.value = input;
-        setInputText(input);
-        // Extract and pass mentions to onAddMention function
-      const mentionsTmp = extractMentions(input);
-      mentionsTmp.forEach(mention => {
-        onAddMention(mention);
-      });
-      */
-    //
     return arr.filter(a => a)
   },[value])
   
@@ -343,7 +349,7 @@ const extractMentions = (input) => {
     console.log("mentions: ", mentions);
     //const interpretId = interprets['' + mentions]['id'];
     const dataArray = [];
-    const targetInterpretId = "Austin1";
+    //const targetInterpretId = "Austin1";
     //const targetInterpretId = mentions;
 
     const lastMention = mentions; //interpret.id
@@ -363,7 +369,7 @@ const extractMentions = (input) => {
     //dataArray.push();
     
 
-    console.log("interpretId: ", interpretId);
+    //console.log("interpretId: ", interpretId);
     //console.log("interpretDisplay: ", interpretDisplay);
     console.log("lastMention: ", lastMention);
     console.log("allMentions.length: ", lastMentionArr);
@@ -383,13 +389,17 @@ const extractMentions = (input) => {
             console.log("lastMention: ", lastMention);
             if (typeof album === 'object' && album !== null) {
                 if (mentionsLen === 1 ) { //album.id === "0" //album.id === lastMention //&& (album.id !== lastMention && album.id !== lastMentionArr)
-                  dataArray.push({ id: album.id, display: album.display });
+                  dataArray.push({ id: album.id, display: '.' + album.display });
                 }
                 Object.values(album).forEach(song => {
                     if (typeof song === 'object' && song !== null && 'id' in song && 'display' in song) {
                       console.log("isLast: ", isLast);
-                      if (album.id === allMentions[1] && !isLast && (mentionsLen === 1 || mentionsLen === 2))  { //|| (song.id !== lastMention && song.id !== lastMentionArr)
-                        dataArray.push({ id: song.id, display: song.display });
+                      console.log("allMentions[0]: ", allMentions[0]);
+                      console.log("allMentions[1]: ", allMentions[1]);  
+                      console.log("allMentions[2]: ", allMentions[2]);
+                      console.log("album.id: ", album.id);
+                      if (album.id === allMentions[1] && !isLast && (mentionsLen === 1 || mentionsLen === 2))  { //album.id === allMentions[1]
+                        dataArray.push({ id: song.id, display: '.' + song.display });
                         //setFileteredArray(dataArray);
                         setLast(true);  
                       }
@@ -402,16 +412,17 @@ const extractMentions = (input) => {
         //dataArray.push({ id: interpretId, display: interpretDisplay });
     });
     setFileteredArray(dataArray);
-    console.log(dataArray);
+    console.log('dataArray: ', dataArray);
     setLast(false);
-  },[allMentions])
+  },[allMentions, isLast, mentions, interprets])
 
   const onAddMention = (mention) => {
     //setMentions((prevMentions) => [...prevMentions, mention]);
     setMention(mention);
     //setMentions([...mentions, mention]);
     //setMentions(mentions.concat(mention));
-    setMentions(prevMentions => [...prevMentions, '.' + mention]);
+    setMentions((prevMentions) => [...prevMentions, mention.id]);
+    //setMentions(prevMentions => [...prevMentions, '.' + mention]);
     setML(mentionsLength + 1);
     addType(mention.type);
     writeAllMentions();
@@ -419,6 +430,8 @@ const extractMentions = (input) => {
     console.log("mentionAdd: ", mention);
     console.log("get mention: ", getLastMention()); //getLastMention()?.id
     console.log("type: ", type);
+    console.log("mention.id: ", mention.id);
+    console.log("--------------ON-ADD-END-----------");
   };
 /*
   const onDeleteMention = (mention) => {

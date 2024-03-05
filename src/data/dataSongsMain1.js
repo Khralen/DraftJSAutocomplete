@@ -1,4 +1,4 @@
-const interprets = [
+const inputData = [
     {
       "id": "Austin1",
       "display": "Austin123",
@@ -195,4 +195,4 @@ const interprets = [
       }
     }
 ] 
-export default interprets;
+export default inputData;
