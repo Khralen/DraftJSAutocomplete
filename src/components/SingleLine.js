@@ -4,11 +4,6 @@ import defaultStyle from "./defaultStyle";
 import defaultMentionStyle from "./defaultMentionStyle";
 //import JsonDisplay from "./JsonDisplay2.js";
 //import AutoComplete from "./AutoComplete.js";
-//import mockUsers from "../data/mockUsers.json";
-//import mockThigs from "../data/mockThings.json";  
-//import mockUsers from "../data/old/mockUsers.js";
-//import mockThigs from "../data/old/mockThings.js";
-//import dataSongs from "../data/dataSongsMain1.js";
 import inputData from "../data/dataSongsMain1v2.js";
 //import inputData from "../data/dataSongsMain1.js";
 
@@ -377,6 +372,7 @@ const extractMentions = (input) => {
     console.log("mentionsLen: ", mentionsLen);
     //if (interpretId === "Austin1") dataArray.push({ id: interpretId, display: interpretDisplay });
 
+    //console.log("children: ", interprets[1]);
     interprets.forEach(interpret => {
         // Check if the interpretId exists in the interprets array
         if (interpretIndex !== -1) {
@@ -384,7 +380,7 @@ const extractMentions = (input) => {
         } else {
             //console.log(`Interpret with id '${targetInterpretId}' does not exist in the interprets array.`);
         }
-        console.log("children: ", interpret.children[0]);
+        
         Object.values(interpret.children[0]).forEach(album => {
           if ((Array.isArray(allMentions) || allMentions !== null) && !isLast && interpret.id === allMentions[0]) { //interpret.id === lastMention
             console.log("album.id: ", album.id);
