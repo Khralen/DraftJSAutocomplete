@@ -284,7 +284,7 @@ useEffect (() => {
         setTrigger(".");
         setDataSource(filteredArray); 
       }
-      if ( prevPrevValue !== ')' && (prevPrevValue !== '\n' || prevPrevValue !== '\s') ) {
+      if ( prevPrevValue !== ')' && (prevPrevValue === '\n' || prevPrevValue === '\s') ) {
         setTrigger("");
         setDataSource([]);
       }
