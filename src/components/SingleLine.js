@@ -89,6 +89,8 @@ const SingleLine = () => {
   //const [isThereMention, setBool] = useState(false);
   const [mentionsLength, setML] = useState(0);
   const [isLast, setLast] = useState(false);
+
+  console.log("\n---------------------initial START----------------------");
   console.log("trigger(render): ", mentionTrigger);
   //console.log("mentionsLength: ", mentionsLength);
 
@@ -111,6 +113,8 @@ useEffect (() => {
   */
   //setDataSource( () => [albumId, albumDisplay]);
 }, [interprets]);
+
+console.log("\n---------------------initial END----------------------");
 /*
 useEffect (() => {
   writeAllMentions();
@@ -164,6 +168,7 @@ useEffect (() => {
 
 
   const onChange = (e) => {
+    console.log("\n---------------------onChange START----------------------");
     console.log("DATA LOAD 3: ", interprets);
     //console.log("Onchangeeeeee:", e);
     setValue(e.target.value);
@@ -224,7 +229,7 @@ useEffect (() => {
     console.log("isPrevCharDot: ", isPrevCharDot);
     console.log("isCurrentTriggerAt: ", isCurrentTriggerAt);
     console.log("isPrevCharEmpty: ", isPrevCharEmpty);*/
-    console.log("prevPrevValue: ", prevPrevValue);
+    console.log("prevPrevValue: ", "<"+prevPrevValue+">");
     
     //setDataSource(mockUsers);
 
@@ -279,10 +284,19 @@ useEffect (() => {
         setTrigger(".");
         setDataSource(filteredArray); 
       }
+      if ( prevPrevValue !== ')' && (prevPrevValue !== '\n' || prevPrevValue !== '\s') ) {
+        setTrigger("");
+        setDataSource([]);
+      }
     } 
+
     if (allMentions.length === 0) { //trimInput === '@'
       setTrigger("@");
       setDataSource(interprets);
+    }
+    if ( isPrevCharDot && prevPrevValue === '.') { //prevValue === '\s'
+      setTrigger("");
+      setDataSource([]);
     }
 
     if (inptLength < inputLength) {
@@ -292,7 +306,7 @@ useEffect (() => {
         //setLength(mentionsLength -1);
       }
     }
-    console.log("---------------------end of onChange----------------------");
+    console.log("---------------------onChange END----------------------");
   };
   
   // Function to extract mentions from the input
@@ -422,7 +436,9 @@ const extractMentions = (input) => {
     setML(mentionsLength + 1);
     addType(mention.type);
     writeAllMentions();
-    setTrigger("."); console.log("-----MentiosAdd: setTrigger('.')");
+    setTrigger("."); 
+    console.log("\n--------------ON-ADD-START-----------");
+    console.log("setTrigger('.')");
     console.log("mentionAdd: ", mention);
     console.log("get mention: ", getLastMention()); //getLastMention()?.id
     console.log("type: ", type);
