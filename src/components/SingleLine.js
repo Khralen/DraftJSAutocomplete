@@ -9,7 +9,8 @@ import defaultMentionStyle from "./defaultMentionStyle";
 //import mockUsers from "../data/old/mockUsers.js";
 //import mockThigs from "../data/old/mockThings.js";
 //import dataSongs from "../data/dataSongsMain1.js";
-import inputData from "../data/dataSongsMain1.js";
+import inputData from "../data/dataSongsMain1v2.js";
+//import inputData from "../data/dataSongsMain1.js";
 
 
 //const data = mockUsers;
@@ -383,7 +384,8 @@ const extractMentions = (input) => {
         } else {
             //console.log(`Interpret with id '${targetInterpretId}' does not exist in the interprets array.`);
         }
-        Object.values(interpret).forEach(album => {
+        console.log("children: ", interpret.children[0]);
+        Object.values(interpret.children[0]).forEach(album => {
           if ((Array.isArray(allMentions) || allMentions !== null) && !isLast && interpret.id === allMentions[0]) { //interpret.id === lastMention
             console.log("album.id: ", album.id);
             console.log("lastMention: ", lastMention);
@@ -395,8 +397,6 @@ const extractMentions = (input) => {
                     if (typeof song === 'object' && song !== null && 'id' in song && 'display' in song) {
                       console.log("isLast: ", isLast);
                       console.log("allMentions[0]: ", allMentions[0]);
-                      console.log("allMentions[1]: ", allMentions[1]);  
-                      console.log("allMentions[2]: ", allMentions[2]);
                       console.log("album.id: ", album.id);
                       if (album.id === allMentions[1] && !isLast && (mentionsLen === 1 || mentionsLen === 2))  { //album.id === allMentions[1]
                         dataArray.push({ id: song.id, display: '.' + song.display });
