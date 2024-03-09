@@ -4,7 +4,7 @@ import defaultStyle from "./defaultStyle";
 import defaultMentionStyle from "./defaultMentionStyle";
 //import JsonDisplay from "./JsonDisplay2.js";
 //import AutoComplete from "./AutoComplete.js";
-import inputData from "../data/dataSongsMain1v2.js";
+import inputData from "../data/dataSongsMain1v3.js";
 //import inputData from "../data/dataSongsMain1.js";
 
 
@@ -75,7 +75,7 @@ const SingleLine = () => {
   //const map = new Map([]);
   const [interprets, setInterprets] = useState([]);
   const [filteredArray, setFileteredArray] = useState([]);
-  const [data, setDataSource] = useState(); //mockUsers
+  const [data, setDataSource] = useState([]); //mockUsers
   const [value, setValue] = useState("");
   const [prevValue, setPrevValue] = useState("");
   const [mentions, setMentions] = useState([]); //all mentions stored here
@@ -94,26 +94,32 @@ const SingleLine = () => {
   console.log("trigger(render): ", mentionTrigger);
   //console.log("mentionsLength: ", mentionsLength);
 
-
 useEffect (() => {
   setInterprets(inputData);
-  console.log("DATA LOAD 1: ", inputData);
+  setDataSource(inputData);
+  //console.log("DATA LOAD 1: ", interprets);
 }, []);
-
+/*
 useEffect (() => {
-  setDataSource(interprets); //mockUsers
-  console.log("DATA LOAD 2: ", interprets);
-  /*
+  console.log("DATA LOAD 1a: ", interprets);
+  console.log("inputData: ", inputData);
+}, []);
+*/
+/*
+useEffect (() => {
+  //setDataSource(interprets); //mockUsers
+  //console.log("DATA LOAD 2: ", interprets);
+  
   console.log("interpretId:  ", interpretId);
   console.log("interpretDisplay:  ", interpretDisplay);
   console.log("isplay ", albumId);
   console.log("albumDisplay: ", albumDisplay);
   console.log("songId ", songId);
   console.log("songDisplay: ", songDisplay);
-  */
+  
   //setDataSource( () => [albumId, albumDisplay]);
 }, [interprets]);
-
+*/
 console.log("\n---------------------initial END----------------------");
 /*
 useEffect (() => {
@@ -357,6 +363,7 @@ const extractMentions = (input) => {
   useEffect( ()=> {
     console.log("allMentions: ", allMentions);
     console.log("mentions: ", mentions);
+    console.log("interprets(useEffect): ", interprets);
     //const interpretId = interprets['' + mentions]['id'];
     const dataArray = [];
     //const targetInterpretId = "Austin1";
@@ -366,7 +373,7 @@ const extractMentions = (input) => {
     const mentionsLen = allMentions.length;
     const lastMentionArr = allMentions[mentionsLen - 1];
     //const selectedMention = '';
-    const interpretIndex = interprets.findIndex(interpret => interpret.id === lastMention); //targetInterpretId
+    //const interpretIndex = interprets.findIndex(interpret => interpret.id === lastMention); //targetInterpretId
     //const albumIndex = interprets.findIndex(album => album.id === lastMention);
     //const interpretId = "Austin1";
     //const interpretDisplay = interprets[interpretIndex]['display']; //interpret.id
@@ -386,16 +393,19 @@ const extractMentions = (input) => {
     console.log("mentionsLen: ", mentionsLen);
     //if (interpretId === "Austin1") dataArray.push({ id: interpretId, display: interpretDisplay });
 
-    //console.log("children: ", interprets[1]);
+    //console.log("interprets[0]: ", interprets.children[0].id);
+    //console.log("lastMention: ", lastMention);
+    //if (!Array.isArray(allMentions) || allMentions === null) return;
+    
     interprets.forEach(interpret => {
         // Check if the interpretId exists in the interprets array
-        if (interpretIndex !== -1) {
+        if (true) { //interpretIndex !== -1
             //console.log(`The index of the interpret with id '${targetInterpretId}' is ${interpretIndex}.`);
         } else {
             //console.log(`Interpret with id '${targetInterpretId}' does not exist in the interprets array.`);
         }
-        
-        Object.values(interpret.children[0]).forEach(album => {
+      if (interpret.children && interpret.children.length > 0) {
+        interpret.children.forEach(album => { //interpret.children[0] Object.values(interpret.children)
           if ((Array.isArray(allMentions) || allMentions !== null) && !isLast && interpret.id === allMentions[0]) { //interpret.id === lastMention
             console.log("album.id: ", album.id);
             console.log("lastMention: ", lastMention);
@@ -403,7 +413,8 @@ const extractMentions = (input) => {
                 if (mentionsLen === 1 ) { //album.id === "0" //album.id === lastMention //&& (album.id !== lastMention && album.id !== lastMentionArr)
                   dataArray.push({ id: album.id, display: '.' + album.display });
                 }
-                Object.values(album).forEach(song => {
+              if (album.children && album.children.length > 0) {
+                album.children.forEach(song => { //Object.values(album.children)
                     if (typeof song === 'object' && song !== null && 'id' in song && 'display' in song) {
                       console.log("isLast: ", isLast);
                       console.log("allMentions[0]: ", allMentions[0]);
@@ -416,11 +427,13 @@ const extractMentions = (input) => {
                       //dataArray.push({ id: song.id, display: song.display });
                     }
                 });
+              }
             }
           }
         });
+      }
         //dataArray.push({ id: interpretId, display: interpretDisplay });
-    });
+    }); 
     setFileteredArray(dataArray);
     console.log('dataArray: ', dataArray);
     setLast(false);
