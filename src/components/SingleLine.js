@@ -138,40 +138,6 @@ useEffect (() => {
     console.log("Mentions: ", allMentions)
   },[allMentions])
 */
-  const onKeyDown = (e) => {
-    if (e.key === "Enter") {
-      //TODO
-    }
-  }
-
-  useEffect(() => {
-    const handleKeyDown = (event) => {
-      const evKey = event.key;
-      //const a = event;
-      //console.log("event: ", event);
-      if (evKey === 'ArrowRight') {
-        //console.log('Right arrow key pressed');
-        // You can access the characters to the right of the cursor here
-        /*
-        TODO
-        Zjistit jestli je predchozi znak '.'
-        Pokud ano - zkontrolovat jestli je prevPrev ')'
-        Pokud ano - nastavit na prazdny trigger dokud se nepresune k ')' 
-        */
-      } else if (evKey === 'ArrowLeft') {
-        //console.log('Left arrow key pressed');
-        // You can access the characters to the left of the cursor here
-        //TODO
-      }
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-    };
-  }, []); // Empty dependency array ensures that the effect runs only once, similar to componentDidMount
-
 
   const onChange = (e) => {
     console.log("\n---------------------onChange START----------------------");
@@ -505,7 +471,6 @@ const extractMentions = (input) => {
       <MentionsInput
         value={value}
         onChange={onChange}
-        onKeyDown={onKeyDown}
         placeholder={"Type '@' or '.' for some suggestions."}
         a11ySuggestionsListLabel={"empty"}
         style={defaultStyle}
