@@ -74,7 +74,7 @@ interprets.forEach(interpret => {
 const SingleLine = () => {
   //const map = new Map([]);
   const [interprets, setInterprets] = useState([]);
-  const [filteredArray, setFileteredArray] = useState([]);
+  const [filteredArray, setFilteredArray] = useState([]);
   const [data, setDataSource] = useState([]); //mockUsers
   const [value, setValue] = useState("");
   const [prevValue, setPrevValue] = useState("");
@@ -88,7 +88,7 @@ const SingleLine = () => {
   const [mentionTrigger, setTrigger] = useState("@");
   //const [isThereMention, setBool] = useState(false);
   const [mentionsLength, setML] = useState(0);
-  const [isLast, setLast] = useState(false);
+  const [isLast, setIsLast] = useState(false);
 
   console.log("\n---------------------initial START----------------------");
   console.log("trigger(render): ", mentionTrigger);
@@ -298,7 +298,7 @@ const extractMentions = (input) => {
     } else {
       mention = {
         id: match[2],
-        display: match[1] //'.'+
+        display: match[1]
       };
       console.log("mentionTEST: ", mention);
     }
@@ -326,84 +326,26 @@ const extractMentions = (input) => {
   },[value])
   
 
-  useEffect( ()=> {
-    console.log("allMentions: ", allMentions);
-    console.log("mentions: ", mentions);
-    console.log("interprets(useEffect): ", interprets);
-    //const interpretId = interprets['' + mentions]['id'];
+  useEffect(() => {
+    const lastMention = mentions[mentions.length - 1];
+    const mentionsLen = mentions.length;
     const dataArray = [];
-    //const targetInterpretId = "Austin1";
-    //const targetInterpretId = mentions;
-
-    const lastMention = mentions; //interpret.id
-    const mentionsLen = allMentions.length;
-    const lastMentionArr = allMentions[mentionsLen - 1];
-    //const selectedMention = '';
-    //const interpretIndex = interprets.findIndex(interpret => interpret.id === lastMention); //targetInterpretId
-    //const albumIndex = interprets.findIndex(album => album.id === lastMention);
-    //const interpretId = "Austin1";
-    //const interpretDisplay = interprets[interpretIndex]['display']; //interpret.id
-    //const interpretDisplay = interprets[0]['display'];
-    //const interpret = { id: interpret[0], display: interprets[interpret[0]] };
-    //const albumDisplay = interprets[albumNumber]['album' + albumNumber]['display'];
-    //const songId = interprets[0]['album1']['song1']['id'];
-    //if (interpretIndex !== -1) console.log("interpret###: ", { id: interprets[interpretIndex].id, display: interprets[interpretIndex].display });
-    //if (interpretIndex !== -1) console.log("album###: ", { id: interprets[interpretIndex][].id, display: interprets[interpretIndex][albumIndex].display });
-    //dataArray.push();
+    console.log("INSIDE!");
     
-
-    //console.log("interpretId: ", interpretId);
-    //console.log("interpretDisplay: ", interpretDisplay);
-    console.log("lastMention: ", lastMention);
-    console.log("allMentions.length: ", lastMentionArr);
-    console.log("mentionsLen: ", mentionsLen);
-    //if (interpretId === "Austin1") dataArray.push({ id: interpretId, display: interpretDisplay });
-
-    //console.log("interprets[0]: ", interprets.children[0].id);
-    //console.log("lastMention: ", lastMention);
-    //if (!Array.isArray(allMentions) || allMentions === null) return;
-    
-    interprets.forEach(interpret => {
-        // Check if the interpretId exists in the interprets array
-        if (true) { //interpretIndex !== -1
-            //console.log(`The index of the interpret with id '${targetInterpretId}' is ${interpretIndex}.`);
-        } else {
-            //console.log(`Interpret with id '${targetInterpretId}' does not exist in the interprets array.`);
-        }
-      if (interpret.children && interpret.children.length > 0) {
-        interpret.children.forEach(album => { //interpret.children[0] Object.values(interpret.children)
-          if ((Array.isArray(allMentions) || allMentions !== null) && !isLast && interpret.id === allMentions[0]) { //interpret.id === lastMention
-            console.log("album.id: ", album.id);
-            console.log("lastMention: ", lastMention);
-            if (typeof album === 'object' && album !== null) {
-                if (mentionsLen === 1 ) { //album.id === "0" //album.id === lastMention //&& (album.id !== lastMention && album.id !== lastMentionArr)
-                  dataArray.push({ id: album.id, display: '.' + album.display });
-                }
-              if (album.children && album.children.length > 0) {
-                album.children.forEach(song => { //Object.values(album.children)
-                    if (typeof song === 'object' && song !== null && 'id' in song && 'display' in song) {
-                      console.log("isLast: ", isLast);
-                      console.log("allMentions[0]: ", allMentions[0]);
-                      console.log("album.id: ", album.id);
-                      if (album.id === allMentions[1] && !isLast && (mentionsLen === 1 || mentionsLen === 2))  { //album.id === allMentions[1]
-                        dataArray.push({ id: song.id, display: '.' + song.display });
-                        //setFileteredArray(dataArray);
-                        setLast(true);  
-                      }
-                      //dataArray.push({ id: song.id, display: song.display });
-                    }
-                });
-              }
-            }
+    const traverseInterprets = (data) => {
+      data.forEach(item => {
+        console.log("item: ", item);
+        dataArray.push({ id: item.id, display: '.' + item.display });
+          if (item && item.children && item.children.length > 0) {
+            traverseInterprets(item.children);
           }
-        });
-      }
-        //dataArray.push({ id: interpretId, display: interpretDisplay });
-    }); 
-    setFileteredArray(dataArray);
-    console.log('dataArray: ', dataArray);
-    setLast(false);
-  },[allMentions, isLast, mentions, interprets])
+      });
+    };
+    traverseInterprets(interprets);
+
+    setFilteredArray(dataArray);
+    setIsLast(false);
+  }, [mentions, interprets]);
 
   const onAddMention = (mention) => {
     //setMentions((prevMentions) => [...prevMentions, mention]);

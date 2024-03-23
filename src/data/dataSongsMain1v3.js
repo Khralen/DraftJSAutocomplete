@@ -29,13 +29,13 @@ const inputData = [
       "type" : "interpret",
       "children": [
         {
-          "id":"album-0",
-          "display":"album-0",
+          "id":"album-02",
+          "display":"album-02",
           "type" : "album",
           "children": [
             {
-              "id": "song-1",
-              "display": "Song 1",
+              "id": "song-01",
+              "display": "Song 01",
               "type" : "song"
             }
           ]
@@ -54,30 +54,30 @@ const inputData = [
       "type" : "interpret",
       "children": [
         {
-          "id":"album-0",
-          "display":"album-0",
+          "id":"album-Charles",
+          "display":"Charles album",
           "type" : "album",
           "children": [
             {
-            "id": "song-1",
+            "id": "Charles-song-1",
             "display": "My Dream 1",
             "type" : "song"
             },
             {
-              "id": "song-2",
+              "id": "Charles-song-2",
               "display": "My Dream 2",
               "type" : "song"
             },
             {
-              "id": "song-3",
+              "id": "Charles-song-3",
               "display": "My Dream 3",
               "type" : "song"
             },
           ]
         },
         {
-          "id":"album-1",
-          "display":"album-1",
+          "id":"album-123",
+          "display":"album-123",
           "type" : "album",
           "children": []
         },
