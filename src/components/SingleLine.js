@@ -327,24 +327,50 @@ const extractMentions = (input) => {
   
 
   useEffect(() => {
-    const lastMention = mentions[mentions.length - 1];
-    const mentionsLen = mentions.length;
-    const dataArray = [];
-    console.log("INSIDE!");
+    var lastMention = mentions; 
+    if (allMentions.length > 0 && Array.isArray(allMentions)) {
+      lastMention = allMentions[allMentions.length - 1];
+    }
     
-    const traverseInterprets = (data) => {
-      data.forEach(item => {
-        console.log("item: ", item);
-        dataArray.push({ id: item.id, display: '.' + item.display });
-          if (item && item.children && item.children.length > 0) {
-            traverseInterprets(item.children);
-          }
+    const tmpData = data.find(data => data.id === lastMention);
+    //var tmpData = data;
+    //if (interpretIndex > -1) tmpData = data[interpretIndex];
+
+    if (tmpData && tmpData.children && Array.isArray(tmpData.children)) {
+      const mentionsLen = mentions.length;
+    const dataArray = [];
+    const itemTypes = [];
+    
+    console.log("INSIDE!");
+    console.log("--Searching index--: ",  data[0].children["album-0"]);
+    console.log("tmpData: ", tmpData);
+    console.log("allMentions: ", allMentions);
+    console.log("allMentions(last): ", allMentions[allMentions.length - 1]);
+    //console.log("interpretIndex: ", interpretIndex);
+    //console.log("GGG: ", data[interpretIndex]);
+
+    const traverseInterprets = (children) => {
+      children.forEach(item => {
+        console.log("-> testing itemType: ", item.type);
+        //console.log("-> testing itemTypes: ", itemTypes);
+        console.log("-> testing dataArray, mentionsLen: ", dataArray, mentionsLen);
+        console.log("-> testing item.id: ", item.id);
+
+        if (item.id && !allMentions.includes(item.id) && !itemTypes.includes(item.type)) { //dataArray.length < mentionsLen //item.type && !itemTypes.includes(item.type)
+          dataArray.push({ id: item.id, display: '.' + item.display });
+          itemTypes.push(item.type);
+        }
+        if (item && item.children && item.children.length > 0) {
+          traverseInterprets(item.children);
+        }
       });
     };
-    traverseInterprets(interprets);
+    traverseInterprets(tmpData.children); //interprets
 
     setFilteredArray(dataArray);
     setIsLast(false);
+    }
+    
   }, [mentions, interprets]);
 
   const onAddMention = (mention) => {
