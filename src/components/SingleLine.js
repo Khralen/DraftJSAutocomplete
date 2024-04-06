@@ -331,6 +331,7 @@ const extractMentions = (input) => {
 
   useEffect(() => {
 
+    setFilteredArray([]);
     var dataArray = [];
     var insertedItems = new Set();
     
@@ -343,11 +344,12 @@ const extractMentions = (input) => {
       data.forEach(item => {
         dataArray.push({ id: item.id, display: '.' + item.display });
         insertedItems.add(item.type);
-      });
+      }); 
+      console.log("1- allMentions Item pushed (1)");
     } else {
       // Find the last typed item in the data
       const lastMentionId = allMentions[allMentions.length - 1];
-      const lastTypedItem = data.find(item => item.id === lastMentionId);
+      const lastTypedItem = data.find(item => item.id === lastMentionId); //Tady to nefunguje - undefined
     
       // Check if lastTypedItem is not undefined
       if (lastTypedItem !== undefined) {
@@ -357,6 +359,13 @@ const extractMentions = (input) => {
           if (!insertedItems.has(item.type) && !allMentions.includes(item.id)) {
             dataArray.push({ id: item.id, display: '.' + item.display });
             insertedItems.add(item.id);
+            console.log("1- allMentions -------------------------");
+            console.log("1- allMentions Set: ", insertedItems);
+            console.log("1- allMentions add item.id: ", item.id);
+            console.log("1- allMentions Item pushed (2)");
+            console.log("1- allMentions -------------------------");
+          } else {
+            //console.log("1- allMentions Suspicious-1: ", item.type, item.id);
           }
     
           // Recursively traverse children
@@ -364,11 +373,15 @@ const extractMentions = (input) => {
             item.children.forEach(child => {
               traverseChildren(child);
             });
+          } else {
+            //console.log("1- allMentions Suspicious-2: ", item.type, item.id);
           }
         };
     
         // Traverse all children of the last typed item and collect them in dataArray
         traverseChildren(lastTypedItem);
+      } else {
+        console.log("1- allMentions Suspicious-3: ", lastTypedItem);
       }
     }
     
