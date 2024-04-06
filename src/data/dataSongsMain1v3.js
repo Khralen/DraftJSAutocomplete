@@ -12,12 +12,19 @@ const inputData = [
             {
               "id": "song-1",
               "display": "song1Display-1",
-              "type" : "song"
+              "type" : "song",
+              "children": [{
+                "id":"test.01",
+                "display":"test-01",
+                "type" : "test",
+                "children": []
+              }]
             },
             {
               "id": "song-2",
               "display": "song2Display-2",
-              "type" : "song"
+              "type" : "song",
+              "children": []
             }
           ]
         },
@@ -36,7 +43,8 @@ const inputData = [
             {
               "id": "song-01",
               "display": "Song 01",
-              "type" : "song"
+              "type" : "song",
+              "children": []
             }
           ]
         },
@@ -61,17 +69,20 @@ const inputData = [
             {
             "id": "Charles-song-1",
             "display": "My Dream 1",
-            "type" : "song"
+            "type" : "song",
+            "children": []
             },
             {
               "id": "Charles-song-2",
               "display": "My Dream 2",
-              "type" : "song"
+              "type" : "song",
+              "children": []
             },
             {
               "id": "Charles-song-3",
               "display": "My Dream 3",
-              "type" : "song"
+              "type" : "song",
+              "children": []
             },
           ]
         },

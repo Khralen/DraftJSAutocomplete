@@ -76,10 +76,12 @@ const SingleLine = () => {
   const [interprets, setInterprets] = useState([]);
   const [filteredArray, setFilteredArray] = useState([]);
   const [data, setDataSource] = useState([]); //mockUsers
+  //const [dataArray, setDataArray] = useState([]); 
   const [value, setValue] = useState("");
   const [prevValue, setPrevValue] = useState("");
   const [mentions, setMentions] = useState([]); //all mentions stored here
-  const [type, addType] = useState([]);
+  //const [type, addType] = useState([]);
+  //const [itemTypes, addType] = useState([]);
   //const [mentionsLength, setLength] = useState(0);
   const [inputLength, setInputLength] = useState(0);
   //const [inputText, setInputText] = useState('');
@@ -88,7 +90,6 @@ const SingleLine = () => {
   const [mentionTrigger, setTrigger] = useState("@");
   //const [isThereMention, setBool] = useState(false);
   const [mentionsLength, setML] = useState(0);
-  const [isLast, setIsLast] = useState(false);
 
   console.log("\n---------------------initial START----------------------");
   console.log("trigger(render): ", mentionTrigger);
@@ -325,8 +326,106 @@ const extractMentions = (input) => {
     return arr.filter(a => a)
   },[value])
   
+  
+
 
   useEffect(() => {
+
+    var dataArray = [];
+    var insertedItems = new Set();
+    
+    console.log("1- allMentions mentions: ", mentions);
+    console.log("1- allMentions: ", allMentions);
+    console.log("1- allMentions-1: ", allMentions[allMentions.length - 1]);
+
+    // If there are no mentions, show all top-level items
+    if (allMentions.length === 0) {
+      data.forEach(item => {
+        dataArray.push({ id: item.id, display: '.' + item.display });
+        insertedItems.add(item.type);
+      });
+    } else {
+      // Find the last typed item in the data
+      const lastMentionId = allMentions[allMentions.length - 1];
+      const lastTypedItem = data.find(item => item.id === lastMentionId);
+    
+      // Check if lastTypedItem is not undefined
+      if (lastTypedItem !== undefined) {
+        // Function to traverse all children of the last typed item and collect them in dataArray
+        const traverseChildren = (item) => {
+          // Add the current item to dataArray if it hasn't been inserted yet
+          if (!insertedItems.has(item.type) && !allMentions.includes(item.id)) {
+            dataArray.push({ id: item.id, display: '.' + item.display });
+            insertedItems.add(item.id);
+          }
+    
+          // Recursively traverse children
+          if (item.children && item.children.length > 0) {
+            item.children.forEach(child => {
+              traverseChildren(child);
+            });
+          }
+        };
+    
+        // Traverse all children of the last typed item and collect them in dataArray
+        traverseChildren(lastTypedItem);
+      }
+    }
+    
+    setFilteredArray(dataArray);
+    
+    
+
+    
+    
+
+    
+
+/*
+    var dataArray = [];
+    var lastMention = null;
+  //verze 5
+  // If there are no mentions, show all top-level items
+  if (allMentions.length === 0) {
+    data.forEach(item => {
+      dataArray.push({ id: item.id, display: '.' + item.display });
+      lastMention = item;
+    });
+  } else {
+    // Find the last typed item in the data
+    let lastTypedItem = data[data.length - 1]; //null
+    const lastMentionId = allMentions[allMentions.length - 1];
+    lastTypedItem = data.find(item => item.id === lastMentionId);
+    //if (lastTypedItem === undefined) lastTypedItem = lastMention;
+    console.log("1) lastTypedItem: ", lastTypedItem, ", lastMentionId: ", lastMentionId, ", dataArray: ", dataArray, ", data: ", data);
+
+    // Function to traverse the children of the last typed item and collect them in dataArray
+    const traverseChildren = (children) => {
+      children.forEach(child => {
+        dataArray.push({ id: child.id, display: '.' + child.display });
+        console.log("2) lastTypedItem: ", lastTypedItem, ", dataArray: ", dataArray, ", data: ", data, ", child.id: ", child.id);
+      });
+    };
+
+    // If the last typed item is found and it has children, traverse its children
+    if (lastTypedItem) { //&& lastTypedItem.children && Array.isArray(lastTypedItem.children)
+      if (lastTypedItem.children && Array.isArray(lastTypedItem.children)) {
+        traverseChildren(lastTypedItem.children);
+      } else {
+        //lastTypedItem.forEach(item => {
+          dataArray.push({ id: lastTypedItem.id, display: '.' + lastTypedItem.display });
+          console.log("4) lastTypedItem: ", lastTypedItem, ", dataArray: ", dataArray, ", data: ", data, ", item.id: ", lastTypedItem.id);
+        //});
+        
+        //dataArray.push({ id: lastTypedItem.id, display: '.' + lastTypedItem.display });
+        console.log("3) lastTypedItem: NO CHILDREN");
+      }
+      console.log("3) lastTypedItem: ", lastTypedItem, ", dataArray: ", dataArray, ", data: ", data);
+    }
+  }
+  setFilteredArray(dataArray);
+*/
+/*
     var lastMention = mentions; 
     if (allMentions.length > 0 && Array.isArray(allMentions)) {
       lastMention = allMentions[allMentions.length - 1];
@@ -337,8 +436,8 @@ const extractMentions = (input) => {
     //if (interpretIndex > -1) tmpData = data[interpretIndex];
 
     if (tmpData && tmpData.children && Array.isArray(tmpData.children)) {
-      const mentionsLen = mentions.length;
-    const dataArray = [];
+    const mentionsLen = mentions.length;
+    //const dataArray = [];
     const itemTypes = [];
     
     console.log("INSIDE!");
@@ -348,30 +447,101 @@ const extractMentions = (input) => {
     console.log("allMentions(last): ", allMentions[allMentions.length - 1]);
     //console.log("interpretIndex: ", interpretIndex);
     //console.log("GGG: ", data[interpretIndex]);
+  
 
+
+//verze 4
+// Find the last typed item in the data
+/*let lastTypedItem = null;
+if (mentions.length > 0) {
+  const lastMentionId = mentions[mentions.length - 1];
+  lastTypedItem = data.find(item => item.id === lastMentionId);
+}
+
+// Function to traverse the children of the last typed item and collect them in dataArray
+const traverseChildren = (children) => {
+  children.forEach(child => {
+    dataArray.push({ id: child.id, display: '.' + child.display });
+  });
+};
+
+// If the last typed item is found and it has children, traverse its children
+if (lastTypedItem && lastTypedItem.children && Array.isArray(lastTypedItem.children)) {
+  traverseChildren(lastTypedItem.children);
+}
+  setFilteredArray(dataArray);
+  */
+    /* verze 3
     const traverseInterprets = (children) => {
+      // Process all immediate children at the current level
+      children.forEach(item => {
+        // Check if the item has children
+        if (item.children && Array.isArray(item.children) && item.children.length > 0) {
+          // Recursively traverse deeper levels for each child
+          traverseInterprets(item.children);
+        } else {
+          // If the item doesn't have children, add it to the dataArray
+          dataArray.push({ id: item.id, display: '.' + item.display });
+        }
+      });
+    };
+    */
+    /* verze 2
+    const traverseInterprets = (children) => {
+      // First, process all immediate children at the current level
       children.forEach(item => {
         console.log("-> testing itemType: ", item.type);
-        //console.log("-> testing itemTypes: ", itemTypes);
+        console.log("itemTypes: ", itemTypes);
         console.log("-> testing dataArray, mentionsLen: ", dataArray, mentionsLen);
         console.log("-> testing item.id: ", item.id);
-
-        if (item.id && !allMentions.includes(item.id) && !itemTypes.includes(item.type)) { //dataArray.length < mentionsLen //item.type && !itemTypes.includes(item.type)
+        console.log("-> testing if cond: ", itemTypes[itemTypes.length - 1]);
+        console.log("-> testing if cond2: ", allMentions[allMentions.length - 1]);
+    
+        if (item.id && !itemTypes.includes(item.type)) { //&& !allMentions.includes(item.id) && !itemTypes.includes(item.type)
           dataArray.push({ id: item.id, display: '.' + item.display });
           itemTypes.push(item.type);
         }
-        if (item && item.children && item.children.length > 0) {
+      });
+
+      // Then, recursively traverse deeper levels for each child
+      children.forEach(item => {
+        if (item.children && Array.isArray(item.children) && item.children.length > 0) {
           traverseInterprets(item.children);
         }
       });
     };
-    traverseInterprets(tmpData.children); //interprets
+    */
+    /*
+    const traverseInterprets = (children) => {
+      children.forEach(item => {
+        console.log("-> testing itemType: ", item.type);
+        console.log("itemTypes: ", itemTypes);
+        //console.log("-> testing itemTypes: ", itemTypes);
+        console.log("-> testing dataArray, mentionsLen: ", dataArray, mentionsLen);
+        console.log("-> testing item.id: ", item.id);
+        console.log("-> testing if cond: ", itemTypes[itemTypes.length -1]);
+        console.log("-> testing if cond2: ", allMentions[allMentions.length - 1]);
 
-    setFilteredArray(dataArray);
-    setIsLast(false);
-    }
+
+        if (item.id && !itemTypes.includes(item.type)) { //&& lastMention !== item.id //&& !allMentions.includes(item.id)
+          dataArray.push({ id: item.id, display: '.' + item.display });
+          itemTypes.push(item.type);
+          
+        }
+        if (item.children && Array.isArray(item.children)) { //item && item.children && item.children.length > 0
+          console.log("Traversed: ", item.id, ' ', item.type, ' allmentions: ', allMentions[allMentions.length - 1], item.children, item.children.length > 0, ' tmp: ', tmpData);
+          console.log("Traversed: ", allMentions);
+          traverseInterprets(item.children);
+        }
+      });
+    };
     
-  }, [mentions, interprets]);
+    console.log("raverse: ", tmpData.children);
+    //traverseInterprets(tmpData.children); //interprets
+    //setFilteredArray(dataArray);
+    }
+    */
+  }, [allMentions, mentions, data]);
 
   const onAddMention = (mention) => {
     //setMentions((prevMentions) => [...prevMentions, mention]);
@@ -381,14 +551,14 @@ const extractMentions = (input) => {
     setMentions((prevMentions) => [...prevMentions, mention.id]);
     //setMentions(prevMentions => [...prevMentions, '.' + mention]);
     setML(mentionsLength + 1);
-    addType(mention.type);
+    //addType(mention.type);
     writeAllMentions();
     setTrigger("."); 
     console.log("\n--------------ON-ADD-START-----------");
     console.log("setTrigger('.')");
     console.log("mentionAdd: ", mention);
     console.log("get mention: ", getLastMention()); //getLastMention()?.id
-    console.log("type: ", type);
+    //console.log("type: ", type);
     console.log("mention.id: ", mention.id);
     console.log("--------------ON-ADD-END-----------");
   };
