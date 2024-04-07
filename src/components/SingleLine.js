@@ -87,6 +87,7 @@ const SingleLine = () => {
   //const [inputText, setInputText] = useState('');
   //const [previousMention, setPreviousMention] = useState();
   const [mention, setMention] = useState(null);
+  const [lastMention, setLMention] = useState(null);
   const [mentionTrigger, setTrigger] = useState("@");
   //const [isThereMention, setBool] = useState(false);
   const [mentionsLength, setML] = useState(0);
@@ -330,10 +331,11 @@ const extractMentions = (input) => {
 
 
   useEffect(() => {
-
+    console.log("UseEffect called: ", allMentions);
     setFilteredArray([]);
     var dataArray = [];
     var insertedItems = new Set();
+    //var lastId = undefined;
     
     console.log("1- allMentions mentions: ", mentions);
     console.log("1- allMentions: ", allMentions);
@@ -344,23 +346,33 @@ const extractMentions = (input) => {
       data.forEach(item => {
         dataArray.push({ id: item.id, display: '.' + item.display });
         insertedItems.add(item.type);
+        setLMention(lastTypedItem.children);
       }); 
       console.log("1- allMentions Item pushed (1)");
     } else {
       // Find the last typed item in the data
       const lastMentionId = allMentions[allMentions.length - 1];
-      const lastTypedItem = data.find(item => item.id === lastMentionId); //Tady to nefunguje - undefined
-    
+      //const lastTypedItem = data.find(item => item.id === lastMentionId); //Tady to nefunguje - undefined
+      var lastTypedItem = lastMention ? lastMention.find(item => item.id === lastMentionId) : data.find(item => item.id === lastMentionId) ;
+      //lastTypedItem = (lastTypedItem === undefined || lastTypedItem.length < 1) ? lastMention : lastTypedItem;
+      //lastTypedItem = lastMention !== null ? lastMention : lastTypedItem;
+      console.log("1- allMentions has-elm: lastMentionId: ", lastMentionId, ', lastTypedItem: ', lastTypedItem, "lastMention: ", lastMention);
+      //lastTypedItem = lastMention.find(item => item.id === lastMentionId);
+
       // Check if lastTypedItem is not undefined
       if (lastTypedItem !== undefined) {
+        console.log("1- allMentions x ITEM: ", lastMentionId, ', lastTypedItem: ', lastTypedItem);
+        setLMention(lastTypedItem.children);
+
         // Function to traverse all children of the last typed item and collect them in dataArray
         const traverseChildren = (item) => {
           // Add the current item to dataArray if it hasn't been inserted yet
-          if (!insertedItems.has(item.type) && !allMentions.includes(item.id)) {
+          if (item !== null && item !== undefined) {
+          if (!allMentions.includes(item.id)) { // && !insertedItems.has(item.type)
             dataArray.push({ id: item.id, display: '.' + item.display });
             insertedItems.add(item.id);
             console.log("1- allMentions -------------------------");
-            console.log("1- allMentions Set: ", insertedItems);
+            //console.log("1- allMentions Set: ", insertedItems);
             console.log("1- allMentions add item.id: ", item.id);
             console.log("1- allMentions Item pushed (2)");
             console.log("1- allMentions -------------------------");
@@ -371,11 +383,14 @@ const extractMentions = (input) => {
           // Recursively traverse children
           if (item.children && item.children.length > 0) {
             item.children.forEach(child => {
+              console.log("1- allMentions x Traverse(child): ", child);
               traverseChildren(child);
             });
           } else {
             //console.log("1- allMentions Suspicious-2: ", item.type, item.id);
+            console.log("1- allMentions: ITEM UNDEFINED", item);
           }
+        }
         };
     
         // Traverse all children of the last typed item and collect them in dataArray
@@ -554,7 +569,7 @@ if (lastTypedItem && lastTypedItem.children && Array.isArray(lastTypedItem.child
     //setFilteredArray(dataArray);
     }
     */
-  }, [allMentions, mentions, data]);
+  }, [allMentions.length]); //allMentions, mentions, data
 
   const onAddMention = (mention) => {
     //setMentions((prevMentions) => [...prevMentions, mention]);
