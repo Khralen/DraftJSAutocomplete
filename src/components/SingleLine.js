@@ -346,9 +346,11 @@ const extractMentions = (input) => {
       data.forEach(item => {
         dataArray.push({ id: item.id, display: '.' + item.display });
         insertedItems.add(item.type);
-        setLMention(lastTypedItem.children);
+        if (item.children && item.children.length > 0) {
+          setLMention(item.children);
+        }
       }); 
-      console.log("1- allMentions Item pushed (1)");
+      //console.log("1- allMentions Item pushed (1)");
     } else {
       // Find the last typed item in the data
       const lastMentionId = allMentions[allMentions.length - 1];
@@ -360,43 +362,73 @@ const extractMentions = (input) => {
       //lastTypedItem = lastMention.find(item => item.id === lastMentionId);
 
       // Check if lastTypedItem is not undefined
-      if (lastTypedItem !== undefined) {
+      if (lastTypedItem !== undefined) {  
         console.log("1- allMentions x ITEM: ", lastMentionId, ', lastTypedItem: ', lastTypedItem);
-        setLMention(lastTypedItem.children);
+        if (lastTypedItem.children && lastTypedItem.children.length > 0) {
+          setLMention(lastTypedItem.children);
+        }
 
         // Function to traverse all children of the last typed item and collect them in dataArray
         const traverseChildren = (item) => {
           // Add the current item to dataArray if it hasn't been inserted yet
           if (item !== null && item !== undefined) {
-          if (!allMentions.includes(item.id)) { // && !insertedItems.has(item.type)
-            dataArray.push({ id: item.id, display: '.' + item.display });
-            insertedItems.add(item.id);
-            console.log("1- allMentions -------------------------");
-            //console.log("1- allMentions Set: ", insertedItems);
-            console.log("1- allMentions add item.id: ", item.id);
-            console.log("1- allMentions Item pushed (2)");
-            console.log("1- allMentions -------------------------");
-          } else {
-            //console.log("1- allMentions Suspicious-1: ", item.type, item.id);
+            if (!allMentions.includes(item.id)) { // && !insertedItems.has(item.type)
+              dataArray.push({ id: item.id, display: '.' + item.display });
+              insertedItems.add(item.id);
+              console.log("1- allMentions -------------------------");
+              //console.log("1- allMentions Set: ", insertedItems);
+              console.log("1- allMentions add item.id: ", item.id);
+              //console.log("1- allMentions Item pushed (2)");
+              //console.log("1- allMentions -------------------------");
+            } else {
+              //console.log("1- allMentions Suspicious-1: ", item.type, item.id);
+            }
+      
+            // Recursively traverse children
+            if (item.children && item.children.length > 0) {
+              item.children.forEach(child => {
+                console.log("1- allMentions x Traverse(child): ", child);
+                traverseChildren(child);
+              });
+            } else {
+              //console.log("1- allMentions Suspicious-2: ", item.type, item.id);
+              console.log("1- allMentions: ITEM UNDEFINED", item);
+            }
           }
-    
-          // Recursively traverse children
-          if (item.children && item.children.length > 0) {
-            item.children.forEach(child => {
-              console.log("1- allMentions x Traverse(child): ", child);
-              traverseChildren(child);
-            });
-          } else {
-            //console.log("1- allMentions Suspicious-2: ", item.type, item.id);
-            console.log("1- allMentions: ITEM UNDEFINED", item);
-          }
-        }
         };
-    
         // Traverse all children of the last typed item and collect them in dataArray
         traverseChildren(lastTypedItem);
       } else {
         console.log("1- allMentions Suspicious-3: ", lastTypedItem);
+        const traverseChildren = (item) => {
+          // Add the current item to dataArray if it hasn't been inserted yet
+          if (item !== null && item !== undefined) {
+            if (!allMentions.includes(item.id)) { // && !insertedItems.has(item.type)
+              dataArray.push({ id: item.id, display: '.' + item.display });
+              insertedItems.add(item.id);
+              console.log("1- allMentions -------------------------");
+              //console.log("1- allMentions Set: ", insertedItems);
+              console.log("1- allMentions add item.id: ", item.id);
+              //console.log("1- allMentions Item pushed (2)");
+              //console.log("1- allMentions -------------------------");
+            } else {
+              //console.log("1- allMentions Suspicious-1: ", item.type, item.id);
+            }
+      
+            // Recursively traverse children
+            if (item.children && item.children.length > 0) {
+              item.children.forEach(child => {
+                console.log("1- allMentions x Traverse(child): ", child);
+                traverseChildren(child);
+              });
+            } else {
+              //console.log("1- allMentions Suspicious-2: ", item.type, item.id);
+              console.log("1- allMentions: ITEM UNDEFINED", item);
+            }
+          }
+        };
+        // Traverse all children of the last typed item and collect them in dataArray
+        traverseChildren(lastTypedItem);
       }
     }
     
