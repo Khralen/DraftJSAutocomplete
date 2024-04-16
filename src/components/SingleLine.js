@@ -77,6 +77,7 @@ const SingleLine = () => {
   const [filteredArray, setFilteredArray] = useState([]);
   const [data, setDataSource] = useState([]); //mockUsers
   const [allItems, setAllItems] = useState([]);
+  const [insertedItems, setInsertedItems] = useState([]);
   //const [dataArray, setDataArray] = useState([]); 
   const [value, setValue] = useState("");
   const [prevValue, setPrevValue] = useState("");
@@ -335,7 +336,7 @@ const extractMentions = (input) => {
     console.log("UseEffect called: ", allMentions);
     setFilteredArray([]);
     var dataArray = [];
-    var insertedItems = new Set();
+    var insertedItemsLast = insertedItems[insertedItems.length -1];
     //var lastId = undefined;
     
     console.log("1- allMentions mentions: ", mentions);
@@ -344,7 +345,6 @@ const extractMentions = (input) => {
 
     const lastMentionId = allMentions[allMentions.length - 1];
     var lastTypedItem;
-    const initMention = allMentions[0];
 
     if (allMentions && allMentions.length > 0) {
       const res1 = lastMention ? lastMention.find(item => item.id === lastMentionId): null;
@@ -360,16 +360,21 @@ const extractMentions = (input) => {
       lastTypedItem = res2;
       console.log("1- allMentions-1-lastTypedItem-3: ", lastTypedItem, inputData);
     }
-    if (typeof(lastTypedItem) === 'undefined') lastTypedItem = inputData.find(() => true);
-    console.log("1- allMentions-1-lastTypedItem-4: ", lastTypedItem, inputData);
+    //if (typeof(lastTypedItem) === 'undefined') lastTypedItem = inputData.find(() => true);
+    //if (typeof(lastTypedItem) === 'undefined') lastTypedItem = data.find(item => item.id === allMentions[allMentions.length-1]);
+    if (typeof(lastTypedItem) === 'undefined') lastTypedItem = interprets.find(item => item.id === allMentions[0]); //lastMention
+    console.log("1- allMentions-1-lastTypedItem-4: ", lastTypedItem, interprets);
 
     //const lastTypedItem = data.find(item => item.id === lastMentionId);
 
     // If there are no mentions, show all top-level items
     if (allMentions.length === 0) {
       data.forEach(item => {
-        dataArray.push({ id: item.id, display: '.' + item.display });
-        insertedItems.add(item.type);
+        if (!allMentions.includes(item.id) ) { //&& !insertedItems.includes(item.id)
+          dataArray.push({ id: item.id, display: '.' + item.display });
+          insertedItems.push(item.id);
+        }
+        
         if (item.children && item.children.length > 0) {
           setLMention(item.children);
         }
@@ -382,25 +387,25 @@ const extractMentions = (input) => {
       
       //lastTypedItem = (lastTypedItem === undefined || lastTypedItem.length < 1) ? lastMention : lastTypedItem;
       //lastTypedItem = lastMention !== null ? lastMention : lastTypedItem;
-      console.log("1- allMentions has-elm: lastMentionId: ", lastMentionId, ', lastTypedItem: ', lastTypedItem, "lastMention: ", lastMention, ", init: ", initMention);
+      console.log("1- allMentions has-elm: lastMentionId: ", lastMentionId, ', lastTypedItem: ', lastTypedItem, "lastMention: ", lastMention);
       //lastTypedItem = lastMention.find(item => item.id === lastMentionId);
 
       // Check if lastTypedItem is not undefined
 
-      if (typeof(lastTypedItem) !== 'undefined' && lastTypedItem !== null) {  //lastTypedItem !== undefined
+      if (true) { //typeof(lastTypedItem) !== 'undefined' && lastTypedItem !== null
         console.log("1- allMentions x ITEM: ", lastMentionId, ', lastTypedItem: ', lastTypedItem);
-        if (lastTypedItem.children && lastTypedItem.children.length > 0) {
+        if (typeof(lastTypedItem) !== 'undefined' && lastTypedItem !== null && lastTypedItem.children && lastTypedItem.children.length > 0) {
           //setLMention(lastTypedItem.children);
-          if (typeof(lastTypedItem) !== 'undefined' && lastTypedItem !== null) setLMention(lastTypedItem.children);
+          setLMention(lastTypedItem.children);
         }
 
         // Function to traverse all children of the last typed item and collect them in dataArray
         const traverseChildren = (item) => {
           // Add the current item to dataArray if it hasn't been inserted yet
           if (item && item !== null && item !== 'undefined') {
-            if (!allMentions.includes(item.id)) { // && !insertedItems.has(item.type)
+            if (!allMentions.includes(item.id) ) { //&& !insertedItems.includes(item.id)
               dataArray.push({ id: item.id, display: '.' + item.display });
-              insertedItems.add(item.id);
+              insertedItems.push(item.id);
               console.log("1- allMentions -------------------------");
               //console.log("1- allMentions Set: ", insertedItems);
               console.log("1- allMentions add item.id: ", item.id);
@@ -408,7 +413,7 @@ const extractMentions = (input) => {
               //console.log("1- allMentions -------------------------");
             } else {
               //console.log("1- allMentions Suspicious-1: ", item.type, item.id);
-              if (allMentions.length > 1 && !insertedItems.has(item.id)) {
+              if (allMentions.length > 1 ) { //&& !insertedItems.includes(item.id)
                 //dataArray.push({ id: item.id, display: '.' + item.display });
                 //insertedItems.add(item.id);
               }
@@ -424,37 +429,14 @@ const extractMentions = (input) => {
               //console.log("1- allMentions Suspicious-2: ", item.type, item.id);
               console.log("1- allMentions: No children", item);
             }
+          } else {
+            //traverseChildren(data);
           }
         };
         // Traverse all children of the last typed item and collect them in dataArray
         traverseChildren(lastTypedItem);
-      } else {
-        console.log("1- allMentions: While loop - allItems, dataArray: ", allItems, dataArray);
-        /*
-        const traverseChildren2 = (item2) => {
-          const item = data.find(item2 => item2.id === data[i]);
-          if (item2.children && item2.children.length > 0) {
-            item2.children.forEach(child => {
-              console.log("1- allMentions x Traverse2(child): ", child);
-              traverseChildren2(child);
-            });
-          }
-        }
-
-
-        var i = 0;
-        const len = allMentions.length;
-        while ( i < len && (data[i].children && data[i].children.length > 0) && (typeof data[i].children === 'object' && data[i].children !== null) ) {
-          const item = data.find(item => item.id === data[i]);
-          if (item && item !== null && item !== 'undefined') {
-            dataArray.push({ id: item.id, display: '.' + item.display });
-          }
-          console.log("1- allMentions: While loop - item: ", item);
-          i = i + 1;
-        }
-        */
-      }
-      
+      } 
+      //if (typeof(lastTypedItem) === 'undefined') lastTypedItem = lastMention; //inputData.find(() => true)
     }
     setFilteredArray(dataArray);
     setAllItems(dataArray);
