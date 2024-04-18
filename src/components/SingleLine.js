@@ -76,7 +76,8 @@ const SingleLine = () => {
   const [interprets, setInterprets] = useState([]);
   const [filteredArray, setFilteredArray] = useState([]);
   const [data, setDataSource] = useState([]); //mockUsers
-  const [allItems, setAllItems] = useState([]);
+  const [blacklist, setBlacklist] = useState(new Set());
+  const [maxLevel, setMaxLevel] = useState(0);
   const [insertedItems, setInsertedItems] = useState([]);
   //const [dataArray, setDataArray] = useState([]); 
   const [value, setValue] = useState("");
@@ -103,6 +104,7 @@ useEffect (() => {
   setDataSource(inputData);
   //console.log("DATA LOAD 1: ", interprets);
 }, []);
+
 /*
 useEffect (() => {
   console.log("DATA LOAD 1a: ", interprets);
@@ -326,7 +328,7 @@ const extractMentions = (input) => {
       if (value.includes(".")) return result; 
       return result;
     });
-    return arr.filter(a => a)
+    return arr.filter(a => a);
   },[value])
   
   
@@ -334,10 +336,18 @@ const extractMentions = (input) => {
 
   useEffect(() => {
     console.log("UseEffect called: ", allMentions);
+    //set cursor
+    //const maxLevel = allMentions.length;
+    const mentionLevel = allMentions.length;
+    var c = 0;
+    //const val = cursor + 1;
+    //setCursor(val);
+
     setFilteredArray([]);
     var dataArray = [];
     var insertedItemsLast = insertedItems[insertedItems.length -1];
     //var lastId = undefined;
+    //blacklist.push(item.type); //setBlacklist()
     
     console.log("1- allMentions mentions: ", mentions);
     console.log("1- allMentions: ", allMentions);
@@ -363,24 +373,34 @@ const extractMentions = (input) => {
     //if (typeof(lastTypedItem) === 'undefined') lastTypedItem = inputData.find(() => true);
     //if (typeof(lastTypedItem) === 'undefined') lastTypedItem = data.find(item => item.id === allMentions[allMentions.length-1]);
     if (typeof(lastTypedItem) === 'undefined') lastTypedItem = interprets.find(item => item.id === allMentions[0]); //lastMention
-    console.log("1- allMentions-1-lastTypedItem-4: ", lastTypedItem, interprets);
+    console.log("1- allMentions-1-lastTypedItem-4: ", lastTypedItem, interprets, allMentions);
 
     //const lastTypedItem = data.find(item => item.id === lastMentionId);
 
     // If there are no mentions, show all top-level items
     if (allMentions.length === 0) {
       data.forEach(item => {
-        if (!allMentions.includes(item.id) ) { //&& !insertedItems.includes(item.id)
+        if (!allMentions.includes(item.id) && !blacklist.has(item.id)) { //&& !insertedItems.includes(item.id)
           dataArray.push({ id: item.id, display: '.' + item.display });
-          insertedItems.push(item.id);
+          console.log("1- allMentions blacklist items: ", item.id); 
+          //insertedItems.push(item.id);
+          //blacklist.push(item.type);
         }
-        
         if (item.children && item.children.length > 0) {
           setLMention(item.children);
         }
+        blacklist.add(item.type);
       }); 
-      //console.log("1- allMentions Item pushed (1)");
-    } else {
+      if (maxLevel === 0) {
+        if (maxLevel < mentionLevel) {
+          setMaxLevel(mentionLevel);
+        } else {
+          setMaxLevel(1);
+        }
+      }
+      console.log("1- allMentions blacklist 0: ", blacklist);
+    } else { //recursion starts here
+      //var c = 0;
       // Find the last typed item in the data
       
       //const lastTypedItem = data.find(item => item.id === lastMentionId); //Tady to nefunguje - undefined
@@ -400,15 +420,21 @@ const extractMentions = (input) => {
         }
 
         // Function to traverse all children of the last typed item and collect them in dataArray
-        const traverseChildren = (item) => {
+        const traverseChildren = (item, level) => {
           // Add the current item to dataArray if it hasn't been inserted yet
           if (item && item !== null && item !== 'undefined') {
-            if (!allMentions.includes(item.id) ) { //&& !insertedItems.includes(item.id)
+            if (!allMentions.includes(item.id) && c >= mentionLevel && c <= maxLevel) { //&& !insertedItems.includes(item.id) //&& !blacklist.has(item.type)
               dataArray.push({ id: item.id, display: '.' + item.display });
-              insertedItems.push(item.id);
+              //insertedItems.push(item.id);
+              if (!allMentions.every(id => !blacklist.has(id))) { //TODO
+                blacklist.add(item.type);
+              }
+              
+              
               console.log("1- allMentions -------------------------");
               //console.log("1- allMentions Set: ", insertedItems);
               console.log("1- allMentions add item.id: ", item.id);
+              console.log("1- allMentions blacklist: ", blacklist);
               //console.log("1- allMentions Item pushed (2)");
               //console.log("1- allMentions -------------------------");
             } else {
@@ -421,11 +447,15 @@ const extractMentions = (input) => {
       
             // Recursively traverse children
             if (item.children && item.children.length > 0) {
+              c = c + 1;
               item.children.forEach(child => {
                 console.log("1- allMentions x Traverse1(child): ", child);
-                traverseChildren(child);
+                console.log("counter, ment, max: ", c, mentionLevel, maxLevel, child.display);
+                //c = c + 1;
+                traverseChildren(child, c);
               });
             } else {
+              if (c > maxLevel) setMaxLevel(c);
               //console.log("1- allMentions Suspicious-2: ", item.type, item.id);
               console.log("1- allMentions: No children", item);
             }
@@ -439,7 +469,8 @@ const extractMentions = (input) => {
       //if (typeof(lastTypedItem) === 'undefined') lastTypedItem = lastMention; //inputData.find(() => true)
     }
     setFilteredArray(dataArray);
-    setAllItems(dataArray);
+    //setAllItems(dataArray);
+    console.log("counter end: ", " ------------end");
     
   }, [allMentions.length]); //allMentions, mentions, data
 
