@@ -8,69 +8,6 @@ import inputData from "../data/dataSongsMain1v3.js";
 //import inputData from "../data/dataSongsMain1.js";
 
 
-//const data = mockUsers;
-//import { convertToHTML } from "draft-convert";
-/*
-const convertMentionsToHTML = (value, mentions) => {
-  const contentState = createValueFromString(value, 'mention', mentions);
-  const html = convertToHTML({ styleToHTML: (style) => style });
-
-  return html(contentState);
-};
-*/
-/*
-const users = mockUsers;
-//const customData = require('../data/mockUsers.json');
-
-const fetchUsers = (query, callback) => {
-  if (!query) return;
-
-  setTimeout(() => {
-    const filteredUsers = mockUsers.filter((user) =>
-      user.display.toLowerCase().includes(query)
-    );
-    callback(filteredUsers);
-  }, 2000);
-};
-
-console.log("list", users);
-*/
-
-//trigger[zobrazeni](ulozene) --> display, id
-
-
-/*const interpretId = interprets[0]['id'];
-const interpretDisplay = interprets[0]['display'];
-const albumId = interprets[2]['album2']['id'];
-const albumDisplay = interprets[2]['album2']['display'];
-const albumNumber = 2;
-const albumDisplay = interprets[albumNumber]['album' + albumNumber]['display'];
-const songId = interprets[0]['album1']['song1']['id'];
-const songDisplay = interprets[0]['album1']['song1']['display'];
-*/
-/*
-// Define an array to store objects with id and display attributes
-const dataArray = [];
-// Iterate through the interprets array
-interprets.forEach(interpret => {
-    // Iterate through each interpret's albums
-    Object.values(interpret).forEach(album => {
-        // Check if the album is an object
-        if (typeof album === 'object' && album !== null) {
-            // Iterate through each song in the album
-            Object.values(album).forEach(song => {
-                // Check if the song is an object and has 'id' and 'display' properties
-                if (typeof song === 'object' && song !== null && 'id' in song && 'display' in song) {
-                    // Push an object containing id and display attributes to the dataArray
-                    dataArray.push({ id: song.id, display: song.display });
-                }
-            });
-        }
-    });
-});*/
-//console.log(dataArray);
-
-
 const SingleLine = () => {
   //const map = new Map([]);
   const [interprets, setInterprets] = useState([]);
@@ -78,26 +15,19 @@ const SingleLine = () => {
   const [data, setDataSource] = useState([]); //mockUsers
   const [blacklist, setBlacklist] = useState(new Set());
   const [maxLevel, setMaxLevel] = useState(0);
+  const [lastTypedParent, setLTP] = useState(0);
   const [insertedItems, setInsertedItems] = useState([]);
-  //const [dataArray, setDataArray] = useState([]); 
   const [value, setValue] = useState("");
   const [prevValue, setPrevValue] = useState("");
   const [mentions, setMentions] = useState([]); //all mentions stored here
-  //const [type, addType] = useState([]);
-  //const [itemTypes, addType] = useState([]);
-  //const [mentionsLength, setLength] = useState(0);
   const [inputLength, setInputLength] = useState(0);
-  //const [inputText, setInputText] = useState('');
-  //const [previousMention, setPreviousMention] = useState();
   const [mention, setMention] = useState(null);
   const [lastMention, setLMention] = useState(null);
   const [mentionTrigger, setTrigger] = useState("@");
-  //const [isThereMention, setBool] = useState(false);
   const [mentionsLength, setML] = useState(0);
 
   console.log("\n---------------------initial START----------------------");
   console.log("trigger(render): ", mentionTrigger);
-  //console.log("mentionsLength: ", mentionsLength);
 
 useEffect (() => {
   setInterprets(inputData);
@@ -105,45 +35,7 @@ useEffect (() => {
   //console.log("DATA LOAD 1: ", interprets);
 }, []);
 
-/*
-useEffect (() => {
-  console.log("DATA LOAD 1a: ", interprets);
-  console.log("inputData: ", inputData);
-}, []);
-*/
-/*
-useEffect (() => {
-  //setDataSource(interprets); //mockUsers
-  //console.log("DATA LOAD 2: ", interprets);
-  
-  console.log("interpretId:  ", interpretId);
-  console.log("interpretDisplay:  ", interpretDisplay);
-  console.log("isplay ", albumId);
-  console.log("albumDisplay: ", albumDisplay);
-  console.log("songId ", songId);
-  console.log("songDisplay: ", songDisplay);
-  
-  //setDataSource( () => [albumId, albumDisplay]);
-}, [interprets]);
-*/
 console.log("\n---------------------initial END----------------------");
-/*
-useEffect (() => {
-  writeAllMentions();
-}, );
-*/
-
-/*
-  const onSelectAutoComplete = (selectedItem) => {
-    console.log("Selected item:", selectedItem);
-    // Add your logic for handling the selected item
-    setSelectedMentions([...selectedMentions, selectedItem]);
-  };*/
-/*
-  useEffect(()=>{
-    console.log("Mentions: ", allMentions)
-  },[allMentions])
-*/
 
   const onChange = (e) => {
     console.log("\n---------------------onChange START----------------------");
@@ -157,24 +49,6 @@ useEffect (() => {
     //const trigger = mentionTrigger;
     var mentions = null;
     
-    // Check if the mention pattern exists in the input
-    /*
-    if (/.\[[^\]]+\]\([^)]+\)/g.test(input)) {
-      // Replace '.' with '@' in the mentions
-      input = input.replaceAll(/.\[([^\]]+)\]\(([^)]+)\)/g, '@[$1]($2)');
-      console.log("--> replaced by @ :", input);
-      //setTrigger('.');
-    }
-    e.target.value = input;
-    //input = "@[Austin123](Austin1)@[album-0](album-0)@[song1Display-1](song-1)";
-    // Use regular expression to match mentions in the input string
-    const modifiedInput = input.replace(/@\[(.*?)\]\((.*?)\)/g, ".$&");
-    console.log("Modified input:", modifiedInput);
-
-    e.target.value = modifiedInput;
-    input = modifiedInput;
-    */
-    //setInputText(input);
     // Extract and pass mentions to onAddMention function
   const mentionsTmp = extractMentions(input);
   console.log("mentionsTmp: ", mentionsTmp);
@@ -373,15 +247,20 @@ const extractMentions = (input) => {
     //if (typeof(lastTypedItem) === 'undefined') lastTypedItem = inputData.find(() => true);
     //if (typeof(lastTypedItem) === 'undefined') lastTypedItem = data.find(item => item.id === allMentions[allMentions.length-1]);
     if (typeof(lastTypedItem) === 'undefined') lastTypedItem = interprets.find(item => item.id === allMentions[0]); //lastMention
+    if (typeof(lastTypedItem) === 'undefined') lastTypedItem = lastTypedParent;
+    //LAST PARENT
+    //TODO
     console.log("1- allMentions-1-lastTypedItem-4: ", lastTypedItem, interprets, allMentions);
+    console.log("1- allMentions-1-lastTypedItem-5: ", lastTypedItem, "parent: ", lastTypedParent);
 
     //const lastTypedItem = data.find(item => item.id === lastMentionId);
 
     // If there are no mentions, show all top-level items
     if (allMentions.length === 0) {
       data.forEach(item => {
-        if (!allMentions.includes(item.id) && !blacklist.has(item.id)) { //&& !insertedItems.includes(item.id)
-          dataArray.push({ id: item.id, display: '.' + item.display });
+        if (!allMentions.includes(item.id) && !blacklist.has(item.type)) { //&& !insertedItems.includes(item.id)
+          dataArray.push({ id: item.id, display: '.' + item.display, type: item.type });
+          blacklist.add(item.type);
           console.log("1- allMentions blacklist items: ", item.id); 
           //insertedItems.push(item.id);
           //blacklist.push(item.type);
@@ -420,14 +299,15 @@ const extractMentions = (input) => {
         }
 
         // Function to traverse all children of the last typed item and collect them in dataArray
-        const traverseChildren = (item, level) => {
+        const traverseChildren = (item, parent) => {
           // Add the current item to dataArray if it hasn't been inserted yet
           if (item && item !== null && item !== 'undefined') {
-            if (!allMentions.includes(item.id) && c >= mentionLevel && c <= maxLevel) { //&& !insertedItems.includes(item.id) //&& !blacklist.has(item.type)
-              dataArray.push({ id: item.id, display: '.' + item.display });
+            if (!allMentions.includes(item.id)) { //&& !insertedItems.includes(item.id) //&& c >= mentionLevel && c <= maxLevel && !blacklist.has(item.type)
+              dataArray.push({ id: item.id, display: '.' + item.display, type: item.type });
+              blacklist.add(item.type);
               //insertedItems.push(item.id);
               if (!allMentions.every(id => !blacklist.has(id))) { //TODO
-                blacklist.add(item.type);
+                //blacklist.add(item.type);
               }
               
               
@@ -447,23 +327,28 @@ const extractMentions = (input) => {
       
             // Recursively traverse children
             if (item.children && item.children.length > 0) {
-              c = c + 1;
+              //c = c + 1;
+              //const parentLevel = item.findIndex()
               item.children.forEach(child => {
                 console.log("1- allMentions x Traverse1(child): ", child);
-                console.log("counter, ment, max: ", c, mentionLevel, maxLevel, child.display);
-                //c = c + 1;
-                traverseChildren(child, c);
+                console.log("counter, ment, max, child : ", c, mentionLevel, maxLevel, child.display);
+                c = c + 1;
+                traverseChildren(child, item);
               });
+              c = c - 1;
             } else {
               if (c > maxLevel) setMaxLevel(c);
               //console.log("1- allMentions Suspicious-2: ", item.type, item.id);
               console.log("1- allMentions: No children", item);
+              //setLTP(parent);
+              console.log("1- allMentions: parent", parent);
             }
           } else {
             //traverseChildren(data);
           }
         };
         // Traverse all children of the last typed item and collect them in dataArray
+        setLTP(lastTypedItem);
         traverseChildren(lastTypedItem);
       } 
       //if (typeof(lastTypedItem) === 'undefined') lastTypedItem = lastMention; //inputData.find(() => true)
@@ -472,7 +357,7 @@ const extractMentions = (input) => {
     //setAllItems(dataArray);
     console.log("counter end: ", " ------------end");
     
-  }, [allMentions.length]); //allMentions, mentions, data
+  }, [allMentions.length, maxLevel]); //allMentions, mentions, data
 
   const onAddMention = (mention) => {
     //setMentions((prevMentions) => [...prevMentions, mention]);
