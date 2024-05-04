@@ -213,9 +213,6 @@ const extractMentions = (input) => {
 
     setFilteredArray([]);
     var dataArray = [];
-    var insertedItemsLast = insertedItems[insertedItems.length -1];
-    //var lastId = undefined;
-    //blacklist.push(item.type); //setBlacklist()
     
     console.log("1- allMentions mentions: ", mentions);
     console.log("1- allMentions: ", allMentions);
@@ -225,7 +222,7 @@ const extractMentions = (input) => {
     var lastTypedItem;
 
     if (allMentions && allMentions.length > 0) {
-      lastTypedItem = lastMention?.find(item => item.id === lastMentionId)
+      lastTypedItem = lastMention?.find(item => item.id === lastMentionId);
       /*
       const res1 = lastMention ? lastMention.find(item => item.id === lastMentionId): null;
       const res2 = data.find(item => item.id === lastMentionId);
@@ -247,36 +244,48 @@ const extractMentions = (input) => {
     if (typeof(lastTypedItem) === 'undefined') {
       console.log("1- allMentions-1-lastTypedItem-5 parent---------------------------------------------------------");
       console.log("1- allMentions-1-lastTypedItem-5 parent-0 set0: ", lastTypedParent?.id, lastTypedItem?.id, a);  
-      if (typeof(lastTypedParent) !== 'undefined') { //lastTypedParent && lastTypedParent.length > 0
+      if (lastTypedParent && typeof(lastTypedParent) !== 'undefined') { //lastTypedParent && lastTypedParent.length > 0
 
+        const parentObject = lastTypedParent?.parent;
+        console.log("1- allMentions-1-lastTypedItem-5 parent-0 set ----------------: pt, ptObj: ", lastTypedParent, parentObject);
         if (isSmaller) {    
           //const parentObject = lastTypedParent?.parent.children.id; //lastTypedParent?.parent
-          const parentObject = lastTypedParent;
-          //const parentObject = lastTypedItem?.parent;
-
-          console.log("1- allMentions-1-lastTypedItem-5 parent-0: ", lastTypedParent?.id, lastTypedItem?.id, a);
-          lastTypedItem = lastTypedParent; a = 1;
+        
+          console.log("1- allMentions-1-lastTypedItem-5 parent---------------Smaler-------------------------------------");
+          console.log("1- allMentions-1-lastTypedItem-5 parent-0 set Smaller: ", lastTypedParent?.id, lastTypedItem?.id, a);
+          a = 1;
           //lastTypedItem = lastTypedParent.children.parent.id;
           lastTypedItem = parentObject;
-          console.log("1- allMentions-1-lastTypedItem-5 parent-0 set1: ", lastTypedParent?.id, lastTypedItem?.id, a);
+          lastTypedItem = interprets.find(item => item.id === allMentions[allMentions.length -1]);
 
-          setLMention(lastTypedItem.children);
-          //setLTP(lastTypedItem);  //data
-          
+          setLMention(lastTypedItem?.children);
+
+          console.log("1- allMentions-1-lastTypedItem-5 parent-0 set1: ", lastTypedParent?.id, lastTypedItem?.id, a);
         } else {
           lastTypedItem = interprets.find(item => item.id === allMentions[0]); 
           a = 2;
-          console.log("1- allMentions-1-lastTypedItem-5 parent-0 set2: ", lastTypedParent?.id, lastTypedItem?.id, a);
+          console.log("1- allMentions-1-lastTypedItem-5 parent-0 set2 NotSmaller: ", lastTypedParent?.id, lastTypedItem?.id, a);
         }
         //setLTP(prevItem);
       } else {
-        lastTypedItem = interprets.find(item => item.id === allMentions[0]); a = 3;
+        //nastane nekdy???
+        lastTypedItem = interprets.find(item => item.id === allMentions[0]); 
+        a = 3;
         console.log("1- allMentions-1-lastTypedItem-5 parent-0 set3: ", lastTypedParent?.id, lastTypedItem?.id, a);
       }
       //setLTP(prevItem);
       setPrevItem(lastTypedItem);
       //setPrevItem(lastTypedItem);
       //setLTP(lastTypedItem);
+    } else {
+      //setLTP(lastTypedItem);
+      const item = {
+        id: lastTypedItem?.id,
+        display: lastTypedItem?.display,
+        type: lastTypedItem?.type,
+        parent: lastTypedParent?.id
+      };
+      setLTP(item);
     }
     //setLTP(prevItem);
     //LAST PARENT
@@ -317,27 +326,34 @@ const extractMentions = (input) => {
           //setLMention(lastTypedItem.children);
           setLMention(lastTypedItem.children);
         }
-
+        var foundItem = null;
         // Function to traverse all children of the last typed item and collect them in dataArray
         const traverseChildren = (item) => { //parent
+          console.log("1- Item found ----------------------------");
+          console.log("1- Item found ----------------------------", item);
           // Add the current item to dataArray if it hasn't been inserted yet
-          if (item && item !== null && item !== 'undefined') {
-            if (!allMentions.includes(item.id)) { //&& !insertedItems.includes(item.id) // !blacklist.has(item.type)
-              dataArray.push({ id: item.id, display: '.' + item.display, type: item.type });
-              console.log("1- allMentions -------------------------");
-              console.log("1- allMentions add item.id: ", item.id);
+          if (item && item !== null && typeof(item) !== 'undefined') {
+            if (allMentions[allMentions.length - 1] === item.id) { //!allMentions.includes(item.id)
+              //dataArray.push({ id: item.id, display: '.' + item.display, type: item.type });
+              //console.log("1- allMentions -------------------------");
+              //console.log("1- allMentions add item.id: ", item.id);
+              foundItem = item;
+              console.log("1- Item found: ", foundItem.id);
+              return;
             } 
-
+            console.log("1- Item found: NO: ", item.id);
             // Recursively traverse children
             if (item.children && item.children.length > 0) {
               item.children.forEach(child => {
-                console.log("counter, ment, max, child : ", child.display);
+                console.log("1- Item found Item child : ", child.display);
                 traverseChildren(child); //, item
               });
             } else {
+              console.log("1- Item found: No children", item);
               console.log("1- allMentions: No children", item);
             }
           }
+          console.log("1- Item found END----------------------------");
         };
         // Traverse all children of the last typed item and collect them in dataArray
 
@@ -363,21 +379,76 @@ const extractMentions = (input) => {
             parent: lastTypedParent.id
           };
           //setLTP(p);  
-          setLTP(lastTypedItem);
+          //setLTP(lastTypedItem);
 
-          if (isSmaller) {
-            //console.log("1- allMentions-1-lastTypedItem-5 parent3: :", lastTypedParent);
-            console.log("1- allMentions-1-lastTypedItem-5 parent-1:", lastTypedParent?.id, lastTypedItem.id);
-            traverseChildren(lastTypedItem); //lastTypedParent
-            //setLTP(lastTypedItem);
-          } else {
-            console.log("1- allMentions-1-lastTypedItem-5 parent-2:", lastTypedParent?.id, lastTypedItem.id);
+          if (!isSmaller) {
+            console.log("1- allMentions-1-lastTypedItem-5 parent-2a:", lastTypedParent?.id, lastTypedItem.id);
             iterateChildren(lastTypedItem);
-            //setLTP(lastTypedParent);
+          } else {
+            //tady se hleda od zacatku
+            console.log("1- allMentions-1-lastTypedItem-5 parent-2aa:", lastTypedParent?.id, lastTypedItem.id, foundItem, allMentions[allMentions.length - 1]);
+            if (interprets && interprets.length > 0) {
+              interprets.forEach(child => {
+                console.log("1- allMentions-1-lastTypedItem-5 parent-2a-child : ", child.display);
+                //if (foundItem !== null) return;
+                traverseChildren(child);
+              });
+            }
+            //traverseChildren(interprets[0]);
+            iterateChildren(foundItem);
+            console.log("1- allMentions-1-lastTypedItem-5 parent-2aaa:", lastTypedParent?.id, lastTypedItem.id, foundItem, allMentions[allMentions.length - 1]);
           }
         } else {
-          if (lastTypedParent && typeof(lastTypedParent) !== 'undefined') setLTP(lastTypedParent);;
-          console.log("1- allMentions-1-lastTypedItem-5 parent-u: :", "ITEM UNDEFINED");
+          if (lastTypedParent && typeof(lastTypedParent) !== 'undefined') {
+            //setLTP(lastTypedParent);
+            console.log("1- allMentions-1-lastTypedItem-5 parent-u: :", "ITEM UNDEFINED");
+            const p2 = {
+              id: lastTypedParent?.id,
+              display: lastTypedParent?.display, //display: '.' + lastTypedItem.display
+              type: lastTypedParent?.type,
+              parent: lastTypedParent?.id
+            };
+            setLTP(p2);
+            if (isSmaller) {
+              //console.log("1- allMentions-1-lastTypedItem-5 parent3: :", lastTypedParent);
+              console.log("1- allMentions-1-lastTypedItem-5 parent-1a:", lastTypedParent?.id, lastTypedItem?.id);
+              //traverseChildren(lastTypedParent);
+              if (interprets && interprets.length > 0) {
+                interprets.forEach(child => {
+                  //if (foundItem !== null) return;
+                  traverseChildren(child);
+                });
+              }
+              //traverseChildren(interprets);
+              iterateChildren(foundItem);
+              console.log("1- allMentions-1-lastTypedItem-5 parent-1aa:", lastTypedParent?.id, lastTypedItem?.id);
+            } else {
+              console.log("1- allMentions-1-lastTypedItem-5 parent-2b:", lastTypedParent?.id, lastTypedItem?.id);
+              iterateChildren(lastTypedItem);
+            }
+          } else { 
+            //nikdy nenastane
+            console.log("1- allMentions-1-lastTypedItem-5 parent-u: :", "Parent UNDEFINED");
+            if (isSmaller) {
+              //console.log("1- allMentions-1-lastTypedItem-5 parent3: :", lastTypedParent);
+              console.log("1- allMentions-1-lastTypedItem-5 parent-1b:", lastTypedParent?.id, lastTypedItem?.id);
+              //traverseChildren(lastTypedItem); //lastTypedParent
+              //traverseChildren(interprets);
+              if (interprets && interprets.length > 0) {
+                interprets.forEach(child => {
+                  //if (foundItem !== null) return;
+                  traverseChildren(child);
+                });
+              }
+              iterateChildren(foundItem);
+              //setLTP(lastTypedItem);
+            } else {
+              console.log("1- allMentions-1-lastTypedItem-5 parent-2c:", lastTypedParent?.id, lastTypedItem?.id);
+              iterateChildren(lastTypedItem);
+              //setLTP(lastTypedParent);
+            }
+          }
+          
         }
         
       } 
