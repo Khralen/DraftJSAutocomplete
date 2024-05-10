@@ -4,6 +4,7 @@ import defaultStyle from "./defaultStyle";
 import defaultMentionStyle from "./defaultMentionStyle";
 //import JsonDisplay from "./JsonDisplay2.js";
 //import AutoComplete from "./AutoComplete.js";
+
 //import inputData from "../data/dataSongsMain1v3.js";
 import inputData from "../data/dataSongs50Interprets.js";
 
@@ -84,17 +85,11 @@ console.log("\n---------------------initial END----------------------");
     console.log("isCurrentTriggerAt: ", isCurrentTriggerAt);
     console.log("isPrevCharEmpty: ", isPrevCharEmpty);*/
     console.log("prevPrevValue: ", "<"+prevPrevValue+">");
-    
-    //setDataSource(mockUsers);
 
     // Switch mention trigger based on conditions
-    if (!Array.isArray(allMentions) || allMentions === null) { //!Array.isArray(mentions) || mentions.length < 1
+    if (!Array.isArray(allMentions) || allMentions === null) {
       setTrigger("@");
-      //setDataSource(mockUsers);
-      //setDataSource(interprets);
-      //setDataSource( () => [albumId, albumDisplay]);
-      //setBool(false);
-      //console.log("Mentions Length: ", mentions.length);
+
       console.log("@ - back to default...");
       if (prevPrevValue !== ' ') {
         setTrigger("@");
@@ -163,17 +158,16 @@ console.log("\n---------------------initial END----------------------");
     console.log("---------------------onChange END----------------------");
   };
   
-  // Function to extract mentions from the input
+// Function to extract mentions from the input
 const extractMentions = (input) => {
   const mentions = [];
   const mentionPattern = /@\[([^\]]+)\]\(([^)]+)\)/g;
   let match;
   let mention;
   while ((match = mentionPattern.exec(input)) !== null) {
-    //console.log("match: ", match);
     mention = {
-      id: match[2], // Assuming the id is the content inside the parenthesis
-      display: match[1] // Assuming the display name is the content inside the square brackets
+      id: match[2],
+      display: match[1]
     };
     console.log("mention1234: ", mention);
     
@@ -184,7 +178,7 @@ const extractMentions = (input) => {
   
 
   const allMentions = useMemo( ()=> {
-    let a = value.split(/[@]/); //let a = value.split(/[@:.]/);
+    let a = value.split(/[@]/);
     a = a.filter((a) => a.startsWith("[") && a.includes("]"))
     const arr = a.map((a)=>{
       if(!a.startsWith("[")) return null;
@@ -229,13 +223,6 @@ const extractMentions = (input) => {
       
       console.log("1- allMentions-1-lastTypedItem-2: ", lastTypedItem, res1, res2, inputData);
       */
-    } else {
-      //TODO
-      /*
-      const res2 = data;
-      lastTypedItem = res2;
-      */
-      console.log("1- allMentions-1-lastTypedItem-3: ", lastTypedItem, inputData);
     }
 
     var a = 0;
@@ -243,7 +230,7 @@ const extractMentions = (input) => {
     if (typeof(lastTypedItem) === 'undefined') {
       console.log("1- allMentions-1-lastTypedItem-5 parent---------------------------------------------------------");
       console.log("1- allMentions-1-lastTypedItem-5 parent-0 set0: ", lastTypedParent?.id, lastTypedItem?.id, a);  
-      if (lastTypedParent && typeof(lastTypedParent) !== 'undefined') { //lastTypedParent && lastTypedParent.length > 0
+      if ( 1===1 || lastTypedParent && typeof(lastTypedParent) !== 'undefined') { //lastTypedParent && lastTypedParent.length > 0
 
         const parentObject = lastTypedParent?.parent;
         console.log("1- allMentions-1-lastTypedItem-5 parent-0 set ----------------: pt, ptObj: ", lastTypedParent, parentObject);
@@ -254,21 +241,26 @@ const extractMentions = (input) => {
           console.log("1- allMentions-1-lastTypedItem-5 parent-0 set Smaller: ", lastTypedParent?.id, lastTypedItem?.id, a);
           a = 1;
           //lastTypedItem = lastTypedParent.children.parent.id;
-          lastTypedItem = parentObject;
-          lastTypedItem = interprets.find(item => item.id === allMentions[allMentions.length -1]);
+          //lastTypedItem = parentObject;
+          //lastTypedItem = interprets.find(item => item.id === allMentions[allMentions.length -1]);
 
-          setLMention(lastTypedItem?.children);
+          //setLMention(lastTypedItem?.children);
 
           console.log("1- allMentions-1-lastTypedItem-5 parent-0 set1: ", lastTypedParent?.id, lastTypedItem?.id, a);
         } else {
-          lastTypedItem = interprets.find(item => item.id === allMentions[0]); 
-          a = 2;
-          console.log("1- allMentions-1-lastTypedItem-5 parent-0 set2 NotSmaller: ", lastTypedParent?.id, lastTypedItem?.id, a);
+          //Zde je problem. Pokud se nesmazal prvek, nastavi se lastTypedItem chybne na interpreta (prvni level).
+          if (allMentions.length === 1) {
+            lastTypedItem = interprets.find(item => item.id === allMentions[0]); 
+            a = 2;
+            console.log("1- allMentions-1-lastTypedItem-5 parent-0 set2 NotSmaller: ", lastTypedParent?.id, lastTypedItem?.id, a);
+          }
+          
         }
         //setLTP(prevItem);
       } else {
         //nastane nekdy???
-        lastTypedItem = interprets.find(item => item.id === allMentions[0]); 
+        lastTypedItem = interprets.find(item => item.id === allMentions[0]);
+        //lastTypedItem = interprets.find(item => item.id === allMentions[0]); 
         a = 3;
         console.log("1- allMentions-1-lastTypedItem-5 parent-0 set3: ", lastTypedParent?.id, lastTypedItem?.id, a);
       }
@@ -278,19 +270,22 @@ const extractMentions = (input) => {
       //setLTP(lastTypedItem);
     } else {
       //setLTP(lastTypedItem);
-      const item = {
-        id: lastTypedItem?.id,
-        display: lastTypedItem?.display,
-        type: lastTypedItem?.type,
-        parent: lastTypedParent?.id
-      };
-      setLTP(item);
+      if (1===2 && lastTypedParent && typeof(lastTypedParent) !== 'undefined'){
+        const item = {
+          id: lastTypedItem?.id,
+          display: lastTypedItem?.display,
+          type: lastTypedItem?.type,
+          parent: lastTypedParent?.id
+        };
+        setLTP(item);
+      }
     }
     //setLTP(prevItem);
     //LAST PARENT
     //TODO
     console.log("1- allMentions-1-lastTypedItem-4: ", lastTypedItem, interprets, allMentions);
     console.log("1- allMentions-1-lastTypedItem-5: ", lastTypedItem, "parent: ", lastTypedParent, a, "ML: ", isSmaller);
+    console.log("1- allMentions-1-lastTypedItem-5 parent-0 Final: ", lastTypedParent?.id, lastTypedItem?.id, a);
 
     //const lastTypedItem = data.find(item => item.id === lastMentionId);
 
@@ -357,6 +352,7 @@ const extractMentions = (input) => {
         // Traverse all children of the last typed item and collect them in dataArray
 
         const iterateChildren = (lastItem) => {
+          console.log("Recursion func: (iterate): ", lastTypedParent?.id, lastTypedItem?.id, "\n", lastTypedItem, foundItem);
           console.log("1- allMentions-1-lastTypedItem-5 parent1 lastItem:", lastItem);
           if (lastItem && lastItem.children && lastItem !== null && typeof(lastItem) !== 'undefined') { //&& lastItem.children && lastItem.children.length > 0
             console.log("1- allMentions-1-lastTypedItem-5 lastItem:", lastItem.display);
@@ -365,11 +361,45 @@ const extractMentions = (input) => {
               if (!allMentions.includes(item.id) ) {
                 dataArray.push({ id: item.id, display: '.' + item.display, type: item.type, parent: lastItem });
                 console.log("1- allMentions-1-lastTypedItem-5 item:", item.display);
+                console.log("Recursion func: (iterate add): ", item?.id);
               }
             });
           }
         }
         
+
+        if (isSmaller) {
+          //console.log("1- allMentions-1-lastTypedItem-5 parent3: :", lastTypedParent);
+          console.log("1- allMentions-1-lastTypedItem-5 parent-1a:", lastTypedParent?.id, lastTypedItem?.id);
+          //traverseChildren(lastTypedParent);
+          if (1===1 || interprets && interprets.length > 0) {
+            interprets?.forEach(child => {
+              //if (foundItem !== null) return;
+              traverseChildren(child);
+            });
+          }
+          //traverseChildren(interprets);
+          console.log("1- allMentions-1-lastTypedItem-5 parent-1aa found:", foundItem?.id);
+          iterateChildren(foundItem);
+          lastTypedItem = foundItem;
+          console.log("1- allMentions-1-lastTypedItem-5 parent-1aa:", lastTypedParent?.id, lastTypedItem?.id);
+          console.log("Recursion func: ", lastTypedParent?.id, lastTypedItem?.id, lastTypedItem, foundItem);
+        } else {
+          console.log("1- allMentions-1-lastTypedItem-5 parent-2b:", lastTypedParent?.id, lastTypedItem?.id);
+          if (lastTypedItem && typeof(lastTypedItem) !== 'undefined') {
+            iterateChildren(lastTypedItem);
+          } else {
+            interprets?.forEach(child => {
+              //if (foundItem !== null) return;
+              traverseChildren(child);
+            });
+            iterateChildren(foundItem);
+            lastTypedItem = foundItem;
+          }
+          console.log("1- allMentions-1-lastTypedItem-5 parent-2b undefined:", lastTypedParent?.id, lastTypedItem?.id);
+        }
+
+/*
         if (lastTypedItem && typeof(lastTypedItem) !== 'undefined') { //lastTypedParent && typeof(lastTypedParent) !== 'undefined' && 
           const p = {
             id: lastTypedItem.id,
@@ -447,34 +477,25 @@ const extractMentions = (input) => {
               //setLTP(lastTypedParent);
             }
           }
-          
         }
-        
+        */
       } 
     }
     setFilteredArray(dataArray);
     console.log("counter end: ", " ------------end");
-    //setLTP(lastTypedItem);
     console.log("\n1- allMentions-1-lastTypedItem-5 pt: ", lastTypedItem);
 
-  }, [allMentions.length, maxLevel]); //allMentions, mentions, data
+  }, [allMentions.length]); //allMentions, mentions, data
 
   const onAddMention = (mention) => {
-    //setMentions((prevMentions) => [...prevMentions, mention]);
     setMention(mention);
-    //setMentions([...mentions, mention]);
-    //setMentions(mentions.concat(mention));
     setMentions((prevMentions) => [...prevMentions, mention.id]);
-    //setMentions(prevMentions => [...prevMentions, '.' + mention]);
-    //setML(mentionsLength + 1);
-    //addType(mention.type);
     writeAllMentions();
     setTrigger("."); 
     console.log("\n--------------ON-ADD-START-----------");
     console.log("setTrigger('.')");
     console.log("mentionAdd: ", mention);
-    console.log("get mention: ", getLastMention()); //getLastMention()?.id
-    //console.log("type: ", type);
+    console.log("get mention: ", getLastMention());
     console.log("mention.id: ", mention.id);
     console.log("--------------ON-ADD-END-----------");
   };
@@ -528,7 +549,6 @@ const extractMentions = (input) => {
         placeholder={"Type '@' or '.' for some suggestions."}
         a11ySuggestionsListLabel={"empty"}
         style={defaultStyle}
-        //customSuggestionsContainer={() => {}}
       >
         <Mention 
          trigger={mentionTrigger} 
