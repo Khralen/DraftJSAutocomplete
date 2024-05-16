@@ -5,28 +5,23 @@ import defaultMentionStyle from "./defaultMentionStyle";
 //import JsonDisplay from "./JsonDisplay2.js";
 //import AutoComplete from "./AutoComplete.js";
 
-//import inputData from "../data/dataSongsMain1v3.js";
-import inputData from "../data/dataSongs50Interprets.js";
+import inputData from "../data/dataSongsMain1v3.js";
+//import inputData from "../data/dataSongs50Interprets.js";
 
 const SingleLine = () => {
-  //const map = new Map([]);
   const [interprets, setInterprets] = useState([]);
   const [filteredArray, setFilteredArray] = useState([]);
-  const [data, setDataSource] = useState([]); //mockUsers
-  const [blacklist, setBlacklist] = useState(new Set());
-  const [maxLevel, setMaxLevel] = useState(0);
+  const [data, setDataSource] = useState([]);
   const [lastTypedParent, setLTP] = useState([]);
-  const [prevItem, setPrevItem] = useState([]);
-  const [insertedItems, setInsertedItems] = useState([]);
+  //const [prevItem, setPrevItem] = useState([]);
   const [value, setValue] = useState("");
   const [prevValue, setPrevValue] = useState("");
   const [inputLength, setInputLength] = useState(0);
 
-  const [mentions, setMentions] = useState([]); //all mentions stored here
-  const [mention, setMention] = useState(null);
+  const [mentions, setMentions] = useState([]);
+  //const [mention, setMention] = useState(null); COMMENTED
   const [lastMention, setLMention] = useState(null);
   const [mentionTrigger, setTrigger] = useState("@");
-  const [mentionsLength, setML] = useState(0);
   const [prevMenLen, setPML] = useState(0);
 
   console.log("\n---------------------initial START----------------------");
@@ -43,13 +38,11 @@ console.log("\n---------------------initial END----------------------");
   const onChange = (e) => {
     console.log("\n---------------------onChange START----------------------");
     console.log("DATA LOAD 3: ", interprets);
-    //console.log("Onchangeeeeee:", e);
     setValue(e.target.value);
     
     var input = e.target.value;
-    console.log("-->arrive: input: ", input);
+    //console.log("-->arrive: input: ", input);
     const inptLength = input.length;
-    //const trigger = mentionTrigger;
     var mentions = null;
     
     // Extract and pass mentions to onAddMention function
@@ -57,10 +50,7 @@ console.log("\n---------------------initial END----------------------");
   console.log("mentionsTmp: ", mentionsTmp);
   mentionsTmp.forEach(mention1 => {
     onAddMention(mention1);
-    console.log("mention1: ", mention1.id); //mention1.display
-    //setMentions((prevMentions) => [...prevMentions, mention]);
-    //setMentions([...mentions, mention1]);
-    //setMentions(() => [mentionsTmp.id, mentionsTmp.display  ] );
+    console.log("mention1: ", mention1.id);
   });
     const trimInput = e.target.value.trim();
     const isEmptyInput = trimInput === "";
@@ -77,15 +67,6 @@ console.log("\n---------------------initial END----------------------");
     // Check if the current trigger is '@'
     const isCurrentTriggerAt = mentionTrigger === "@";
   
-    console.log("onChange", e);
-    console.log("mention-change: ", mention);
-    console.log("input: ", input);/*
-    console.log("isPrevCharAt: ", isPrevCharAt);
-    console.log("isPrevCharDot: ", isPrevCharDot);
-    console.log("isCurrentTriggerAt: ", isCurrentTriggerAt);
-    console.log("isPrevCharEmpty: ", isPrevCharEmpty);*/
-    console.log("prevPrevValue: ", "<"+prevPrevValue+">");
-
     // Switch mention trigger based on conditions
     if (!Array.isArray(allMentions) || allMentions === null) {
       setTrigger("@");
@@ -121,7 +102,7 @@ console.log("\n---------------------initial END----------------------");
           setDataSource([]);
         } else {
           setTrigger(".");
-          setDataSource(filteredArray);//interprets
+          setDataSource(filteredArray); //interprets
         }
       }
       if (prevValue === " " && prevPrevValue === ")") {
@@ -139,11 +120,11 @@ console.log("\n---------------------initial END----------------------");
       }
     } 
 
-    if (allMentions.length === 0) { //trimInput === '@'
+    if (allMentions.length === 0) {
       setTrigger("@");
       setDataSource(interprets);
     }
-    if ( isPrevCharDot && prevPrevValue === '.') { //prevValue === '\s'
+    if ( isPrevCharDot && prevPrevValue === '.') {
       setTrigger("");
       setDataSource([]);
     }
@@ -152,7 +133,6 @@ console.log("\n---------------------initial END----------------------");
       //najdi smazanou mention a odstran ji z pole mentions
       if (Array.isArray(mentions) && mentions.length > 1) {
         setMentions(mentions.pop());
-        //setLength(mentionsLength -1);
       }
     }
     console.log("---------------------onChange END----------------------");
@@ -169,8 +149,6 @@ const extractMentions = (input) => {
       id: match[2],
       display: match[1]
     };
-    console.log("mention1234: ", mention);
-    
     mentions.push(mention);
   }
   return mentions;
@@ -195,7 +173,6 @@ const extractMentions = (input) => {
   },[value])
   
   
-
 
   useEffect(() => {
     console.log("UseEffect called: ", allMentions);
@@ -230,22 +207,19 @@ const extractMentions = (input) => {
     if (typeof(lastTypedItem) === 'undefined') {
       console.log("1- allMentions-1-lastTypedItem-5 parent---------------------------------------------------------");
       console.log("1- allMentions-1-lastTypedItem-5 parent-0 set0: ", lastTypedParent?.id, lastTypedItem?.id, a);  
-      if ( 1===1 || lastTypedParent && typeof(lastTypedParent) !== 'undefined') { //lastTypedParent && lastTypedParent.length > 0
+      if ( 1===1 ) { // || lastTypedParent && typeof(lastTypedParent) !== 'undefined'
 
         const parentObject = lastTypedParent?.parent;
         console.log("1- allMentions-1-lastTypedItem-5 parent-0 set ----------------: pt, ptObj: ", lastTypedParent, parentObject);
+
         if (isSmaller) {    
-          //const parentObject = lastTypedParent?.parent.children.id; //lastTypedParent?.parent
-        
           console.log("1- allMentions-1-lastTypedItem-5 parent---------------Smaler-------------------------------------");
           console.log("1- allMentions-1-lastTypedItem-5 parent-0 set Smaller: ", lastTypedParent?.id, lastTypedItem?.id, a);
           a = 1;
           //lastTypedItem = lastTypedParent.children.parent.id;
           //lastTypedItem = parentObject;
           //lastTypedItem = interprets.find(item => item.id === allMentions[allMentions.length -1]);
-
           //setLMention(lastTypedItem?.children);
-
           console.log("1- allMentions-1-lastTypedItem-5 parent-0 set1: ", lastTypedParent?.id, lastTypedItem?.id, a);
         } else {
           //Zde je problem. Pokud se nesmazal prvek, nastavi se lastTypedItem chybne na interpreta (prvni level).
@@ -254,22 +228,21 @@ const extractMentions = (input) => {
             a = 2;
             console.log("1- allMentions-1-lastTypedItem-5 parent-0 set2 NotSmaller: ", lastTypedParent?.id, lastTypedItem?.id, a);
           }
-          
         }
         //setLTP(prevItem);
       } else {
+        /*
         //nastane nekdy???
         lastTypedItem = interprets.find(item => item.id === allMentions[0]);
         //lastTypedItem = interprets.find(item => item.id === allMentions[0]); 
         a = 3;
         console.log("1- allMentions-1-lastTypedItem-5 parent-0 set3: ", lastTypedParent?.id, lastTypedItem?.id, a);
+        */
       }
-      //setLTP(prevItem);
-      setPrevItem(lastTypedItem);
-      //setPrevItem(lastTypedItem);
-      //setLTP(lastTypedItem);
+      //setPrevItem(lastTypedItem); COMMENTED
+
     } else {
-      //setLTP(lastTypedItem);
+      /*
       if (1===2 && lastTypedParent && typeof(lastTypedParent) !== 'undefined'){
         const item = {
           id: lastTypedItem?.id,
@@ -279,10 +252,9 @@ const extractMentions = (input) => {
         };
         setLTP(item);
       }
+      */
     }
-    //setLTP(prevItem);
-    //LAST PARENT
-    //TODO
+
     console.log("1- allMentions-1-lastTypedItem-4: ", lastTypedItem, interprets, allMentions);
     console.log("1- allMentions-1-lastTypedItem-5: ", lastTypedItem, "parent: ", lastTypedParent, a, "ML: ", isSmaller);
     console.log("1- allMentions-1-lastTypedItem-5 parent-0 Final: ", lastTypedParent?.id, lastTypedItem?.id, a);
@@ -292,31 +264,19 @@ const extractMentions = (input) => {
     // If there are no mentions, show all top-level items
     if (allMentions.length === 0) {
       data.forEach(item => {
-        if (!allMentions.includes(item.id) ) { //&& !insertedItems.includes(item.id) && !blacklist.has(item.type)
+        if (!allMentions.includes(item.id) ) {
           dataArray.push({ id: item.id, display: '.' + item.display, type: item.type });
         }
         if (item.children && item.children.length > 0) {
           setLMention(item.children);
         }
       }); 
-      //setLTP(data);
-      console.log("1- allMentions blacklist 0: ", blacklist);
-    } else { //recursion starts here
-      //var c = 0;
-      // Find the last typed item in the data
-      
-      //const lastTypedItem = data.find(item => item.id === lastMentionId); //Tady to nefunguje - undefined
-      
-      //lastTypedItem = (lastTypedItem === undefined || lastTypedItem.length < 1) ? lastMention : lastTypedItem;
-      //lastTypedItem = lastMention !== null ? lastMention : lastTypedItem;
+    } else {
       console.log("1- allMentions has-elm: lastMentionId: ", lastMentionId, ', lastTypedItem: ', lastTypedItem, "lastMention: ", lastMention);
-      //lastTypedItem = lastMention.find(item => item.id === lastMentionId);
-
       // Check if lastTypedItem is not undefined
-      
-      if (true) { //typeof(lastTypedItem) !== 'undefined' && lastTypedItem !== null
         console.log("1- allMentions x ITEM: ", lastMentionId, ', lastTypedItem: ', lastTypedItem);
-        if (typeof(lastTypedItem) !== 'undefined' && lastTypedItem !== null ) { //&& lastTypedItem.children && lastTypedItem.children.length > 0
+
+        if (typeof(lastTypedItem) !== 'undefined' && lastTypedItem !== null ) {
           //setLMention(lastTypedItem.children);
           setLMention(lastTypedItem.children);
         }
@@ -399,98 +359,17 @@ const extractMentions = (input) => {
           console.log("1- allMentions-1-lastTypedItem-5 parent-2b undefined:", lastTypedParent?.id, lastTypedItem?.id);
         }
 
-/*
-        if (lastTypedItem && typeof(lastTypedItem) !== 'undefined') { //lastTypedParent && typeof(lastTypedParent) !== 'undefined' && 
-          const p = {
-            id: lastTypedItem.id,
-            display: lastTypedItem.display, //display: '.' + lastTypedItem.display
-            type: lastTypedItem.type,
-            parent: lastTypedParent.id
-          };
-          //setLTP(p);  
-          //setLTP(lastTypedItem);
-
-          if (!isSmaller) {
-            console.log("1- allMentions-1-lastTypedItem-5 parent-2a:", lastTypedParent?.id, lastTypedItem.id);
-            iterateChildren(lastTypedItem);
-          } else {
-            //tady se hleda od zacatku
-            console.log("1- allMentions-1-lastTypedItem-5 parent-2aa:", lastTypedParent?.id, lastTypedItem.id, foundItem, allMentions[allMentions.length - 1]);
-            if (interprets && interprets.length > 0) {
-              interprets.forEach(child => {
-                console.log("1- allMentions-1-lastTypedItem-5 parent-2a-child : ", child.display);
-                //if (foundItem !== null) return;
-                traverseChildren(child);
-              });
-            }
-            //traverseChildren(interprets[0]);
-            iterateChildren(foundItem);
-            console.log("1- allMentions-1-lastTypedItem-5 parent-2aaa:", lastTypedParent?.id, lastTypedItem.id, foundItem, allMentions[allMentions.length - 1]);
-          }
-        } else {
-          if (lastTypedParent && typeof(lastTypedParent) !== 'undefined') {
-            //setLTP(lastTypedParent);
-            console.log("1- allMentions-1-lastTypedItem-5 parent-u: :", "ITEM UNDEFINED");
-            const p2 = {
-              id: lastTypedParent?.id,
-              display: lastTypedParent?.display, //display: '.' + lastTypedItem.display
-              type: lastTypedParent?.type,
-              parent: lastTypedParent?.id
-            };
-            setLTP(p2);
-            if (isSmaller) {
-              //console.log("1- allMentions-1-lastTypedItem-5 parent3: :", lastTypedParent);
-              console.log("1- allMentions-1-lastTypedItem-5 parent-1a:", lastTypedParent?.id, lastTypedItem?.id);
-              //traverseChildren(lastTypedParent);
-              if (interprets && interprets.length > 0) {
-                interprets.forEach(child => {
-                  //if (foundItem !== null) return;
-                  traverseChildren(child);
-                });
-              }
-              //traverseChildren(interprets);
-              iterateChildren(foundItem);
-              console.log("1- allMentions-1-lastTypedItem-5 parent-1aa:", lastTypedParent?.id, lastTypedItem?.id);
-            } else {
-              console.log("1- allMentions-1-lastTypedItem-5 parent-2b:", lastTypedParent?.id, lastTypedItem?.id);
-              iterateChildren(lastTypedItem);
-            }
-          } else { 
-            //nikdy nenastane
-            console.log("1- allMentions-1-lastTypedItem-5 parent-u: :", "Parent UNDEFINED");
-            if (isSmaller) {
-              //console.log("1- allMentions-1-lastTypedItem-5 parent3: :", lastTypedParent);
-              console.log("1- allMentions-1-lastTypedItem-5 parent-1b:", lastTypedParent?.id, lastTypedItem?.id);
-              //traverseChildren(lastTypedItem); //lastTypedParent
-              //traverseChildren(interprets);
-              if (interprets && interprets.length > 0) {
-                interprets.forEach(child => {
-                  //if (foundItem !== null) return;
-                  traverseChildren(child);
-                });
-              }
-              iterateChildren(foundItem);
-              //setLTP(lastTypedItem);
-            } else {
-              console.log("1- allMentions-1-lastTypedItem-5 parent-2c:", lastTypedParent?.id, lastTypedItem?.id);
-              iterateChildren(lastTypedItem);
-              //setLTP(lastTypedParent);
-            }
-          }
-        }
-        */
-      } 
+      
     }
     setFilteredArray(dataArray);
-    console.log("counter end: ", " ------------end");
     console.log("\n1- allMentions-1-lastTypedItem-5 pt: ", lastTypedItem);
 
   }, [allMentions.length]); //allMentions, mentions, data
 
   const onAddMention = (mention) => {
-    setMention(mention);
+    //setMention(mention); COMMENTED
     setMentions((prevMentions) => [...prevMentions, mention.id]);
-    writeAllMentions();
+    //writeAllMentions();
     setTrigger("."); 
     console.log("\n--------------ON-ADD-START-----------");
     console.log("setTrigger('.')");
