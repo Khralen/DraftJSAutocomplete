@@ -24,6 +24,10 @@ const SingleLine = () => {
   const [mentionTrigger, setTrigger] = useState("@");
   const [prevMenLen, setPML] = useState(0);
 
+  //const triggerPattern = new RegExp(`[${mentionTrigger}\\w]`);
+  //const triggerPattern = useMemo(() => /[@a-zA-Z0-9]/, []);
+  const triggerPattern = useMemo(() => /[\s\S]/, []);
+
   console.log("\n---------------------initial START----------------------");
   console.log("trigger(render): ", mentionTrigger);
 
@@ -35,13 +39,13 @@ useEffect (() => {
 
 console.log("\n---------------------initial END----------------------");
 
-  const onChange = (e) => {
+  const onChange = (e, newValue, newPlainTextValue, mentions) => {
     console.log("\n---------------------onChange START----------------------");
     console.log("DATA LOAD 3: ", interprets);
-    setValue(e.target.value);
     
-    var input = e.target.value;
-    //console.log("-->arrive: input: ", input);
+    const input = e.target.value;
+    setValue(input);
+    console.log("arrive: input: ", input);
     const inptLength = input.length;
     var mentions = null;
     
@@ -52,8 +56,22 @@ console.log("\n---------------------initial END----------------------");
     onAddMention(mention1);
     console.log("mention1: ", mention1.id);
   });
-    const trimInput = e.target.value.trim();
+    const trimInput = input.trim(); //e.target.value
     const isEmptyInput = trimInput === "";
+    if (isEmptyInput || inptLength === 1) {
+      console.log("inptLength je 1: input: ", input);
+      setDataSource(interprets); // Show all mentions if input is empty
+      //setTrigger('@'); //input[0] 
+      //setTrigger(/[@a-zA-Z0-9]/);
+
+      // Filter mentions based on input
+      const trimInput = newPlainTextValue.trim();
+      const filtered = interprets.filter(item => 
+      item.display.toLowerCase().includes(trimInput.toLowerCase())
+    );
+    setDataSource(filtered);
+    }
+
     // Check if the previous character is space or it is the first character in the textbox
     const isPrevCharSpace = input.slice(-1) === " ";
     const isPrevCharEmpty = inputLength === 0;
@@ -64,26 +82,28 @@ console.log("\n---------------------initial END----------------------");
     setPrevValue(prevPrevValue);
     isPrevCharSpace?setPrevValue(" "):setPrevValue("NO");
     setInputLength(inptLength);
-    // Check if the current trigger is '@'
+
     const isCurrentTriggerAt = mentionTrigger === "@";
   
-    // Switch mention trigger based on conditions
     if (!Array.isArray(allMentions) || allMentions === null) {
       setTrigger("@");
-
+      setTrigger(/[@a-zA-Z0-9]/);
       console.log("@ - back to default...");
       if (prevPrevValue !== ' ') {
         setTrigger("@");
+        setTrigger(/[@a-zA-Z0-9]/);
         setDataSource(interprets);
       }
     }
     if (inptLength === 0) {
       setTrigger("@");
+      setTrigger(/[@a-zA-Z0-9]/);
       setDataSource(interprets);
       console.log("@ - first char");
     }
     if (!isPrevCharSpace && isPrevCharSpace && !isCurrentTriggerAt) {
       setTrigger("@");
+      setTrigger(/[@a-zA-Z0-9]/);
       setDataSource(interprets);
     }
 
@@ -91,6 +111,7 @@ console.log("\n---------------------initial END----------------------");
       if (isCurrentTriggerAt && isPrevCharAt ) {
         if (isPrevCharAt) {
           setTrigger("@");
+          setTrigger(/[@a-zA-Z0-9]/);
           setDataSource(interprets);
         }
       } 
@@ -122,6 +143,7 @@ console.log("\n---------------------initial END----------------------");
 
     if (allMentions.length === 0) {
       setTrigger("@");
+      //setTrigger(/./);
       setDataSource(interprets);
     }
     if ( isPrevCharDot && prevPrevValue === '.') {
@@ -418,22 +440,25 @@ const extractMentions = (input) => {
   };
   */
 
+  const displayTransform = (id, display) => `@${display}`;
+  
   return (
     <div className="single-line">
       <h3>Single line input</h3>
-
+      
       <MentionsInput
         value={value}
         onChange={onChange}
-        placeholder={"Type '@' or '.' for some suggestions."}
+        placeholder={"Type '@' or text for some suggestions."}
         a11ySuggestionsListLabel={"empty"}
         style={defaultStyle}
       >
         <Mention 
-         trigger={mentionTrigger} 
+         trigger={allMentions.length > 0 ? mentionTrigger: ""}
          data={data} 
          onAdd={onAddMention}
          style={defaultMentionStyle}
+         
          />
          
       </MentionsInput>
