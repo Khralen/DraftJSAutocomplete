@@ -4,7 +4,8 @@ import defaultStyle from "./defaultStyle";
 import defaultMentionStyle from "./defaultMentionStyle";
 //import MyDraftJSComponent from "../../src/components/DraftJsMentions/DraftJsMentions.js";
 //import MyDraftJSComponent from "../../src/components/MentionTrigger.js";
-import MyDraftJSComponent from "./SimpleMtEditor/index.js";
+//import MyDraftJSComponent from "./SimpleMtEditor/index.js";
+import MyEditor from "../components/DraftJsEditor/MyEditor.js";
 
 
 import JsonDisplay from "./JsonDisplay2.js";
@@ -482,7 +483,7 @@ const extractMentions = (input) => {
         />
       </MentionsInput>
 
-      <MyDraftJSComponent/>
+      <MyEditor/>
       
       
       {/* <div dangerouslySetInnerHTML={{ __html: htmlContent }} /> */}
