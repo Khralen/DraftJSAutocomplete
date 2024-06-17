@@ -5,21 +5,27 @@ import createMentionPlugin, {
   defaultSuggestionsFilter
 } from "draft-js-mention-plugin";
 import { convertToRaw } from "draft-js";
-import mentions from "./mentions";
+import mentions from "./mentions1";
 //import pluginStyles from "../node_modules/draft-js-mention-plugin/lib/plugin.css";
+import data from "./data.json";
 
 export default class SimpleMentionEditor extends Component {
   constructor(props) {
     super(props);
 
     this.mentionPlugin = createMentionPlugin();
+
+    this.state = {
+      editorState: EditorState.createEmpty(),
+      suggestions: props.inputData // použij inputData nebo fallback na původní data
+    };
   }
-
-  state = {
+/*
+  this.state = {
     editorState: EditorState.createEmpty(),
-    suggestions: mentions
+    suggestions: data //mentions
   };
-
+*/
   onChange = editorState => {
     this.setState({
       editorState
@@ -28,7 +34,7 @@ export default class SimpleMentionEditor extends Component {
 
   onSearchChange = ({ value }) => {
     this.setState({
-      suggestions: defaultSuggestionsFilter(value, mentions)
+      suggestions: this.props.inputData || data //defaultSuggestionsFilter(value, data) //mentions
     });
   };
 

@@ -483,7 +483,7 @@ const extractMentions = (input) => {
         />
       </MentionsInput>
 
-      <MyEditor/>
+      <MyEditor inputData = {""}/>
       
       
       {/* <div dangerouslySetInnerHTML={{ __html: htmlContent }} /> */}
