@@ -31,15 +31,15 @@ function DraftJsMentions() {
         var value = _a.value;
         setSuggestions((0, mention_1.defaultSuggestionsFilter)(value, Mentions_1.default));
     }, []);
+    const onAddMention = () => {
+    };
     return (<div 
     className={editorStyles.editor}
     onClick={function () {
             ref.current.focus();
         }}>
         <editor_1.default editorKey={'editor'} editorState={editorState} onChange={setEditorState} plugins={plugins} ref={ref}/>
-        <MentionSuggestions open={open} onOpenChange={onOpenChange} suggestions={suggestions} onSearchChange={onSearchChange} onAddMention={function () {
-            // get the mention object selected
-        }}/>
+        <MentionSuggestions open={open} onOpenChange={onOpenChange} suggestions={suggestions} onSearchChange={onSearchChange} onAddMention={onAddMention}/>
       </div>);
 }
 //exports.default = SimpleMentionEditor;

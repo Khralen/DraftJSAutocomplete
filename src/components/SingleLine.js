@@ -2,11 +2,16 @@ import { useEffect, useMemo, useState } from "react";
 import { Mention, MentionsInput } from "react-mentions";
 import defaultStyle from "./defaultStyle";
 import defaultMentionStyle from "./defaultMentionStyle";
-//import JsonDisplay from "./JsonDisplay2.js";
+//import MyDraftJSComponent from "../../src/components/DraftJsMentions/DraftJsMentions.js";
+//import MyDraftJSComponent from "../../src/components/MentionTrigger.js";
+import MyDraftJSComponent from "./SimpleMtEditor/index.js";
+
+
+import JsonDisplay from "./JsonDisplay2.js";
 //import AutoComplete from "./AutoComplete.js";
 
 import inputData from "../data/dataSongsMain1v3.js";
-//import inputData from "../data/dataSongs50Interprets.js";
+import inputData2 from "../data/dataSongs50Interprets.js";
 
 const SingleLine = () => {
   const [interprets, setInterprets] = useState([]);
@@ -21,6 +26,9 @@ const SingleLine = () => {
   const [mentions, setMentions] = useState([]);
   //const [mention, setMention] = useState(null); COMMENTED
   const [lastMention, setLMention] = useState(null);
+
+  const tr = '@';
+  const tr1 = '.';
   const [mentionTrigger, setTrigger] = useState("@");
   const [prevMenLen, setPML] = useState(0);
 
@@ -83,36 +91,37 @@ console.log("\n---------------------initial END----------------------");
     isPrevCharSpace?setPrevValue(" "):setPrevValue("NO");
     setInputLength(inptLength);
 
-    const isCurrentTriggerAt = mentionTrigger === "@";
+    const isCurrentTriggerAt = mentionTrigger === tr;
   
     if (!Array.isArray(allMentions) || allMentions === null) {
-      setTrigger("@");
-      setTrigger(/[@a-zA-Z0-9]/);
+      setTrigger(tr);
+      //setTrigger(/[@a-zA-Z0-9]/);
       console.log("@ - back to default...");
       if (prevPrevValue !== ' ') {
-        setTrigger("@");
-        setTrigger(/[@a-zA-Z0-9]/);
+        setTrigger(tr);
+        //setTrigger(/[@a-zA-Z0-9]/);
         setDataSource(interprets);
       }
     }
     if (inptLength === 0) {
-      setTrigger("@");
-      setTrigger(/[@a-zA-Z0-9]/);
+      setTrigger(tr);
+      //setTrigger(/[@a-zA-Z0-9]/);
       setDataSource(interprets);
       console.log("@ - first char");
     }
     if (!isPrevCharSpace && isPrevCharSpace && !isCurrentTriggerAt) {
-      setTrigger("@");
-      setTrigger(/[@a-zA-Z0-9]/);
+      setTrigger(tr);
+      //setTrigger(/[@a-zA-Z0-9]/);
       setDataSource(interprets);
     }
 
-    if (isPrevCharSpace || isPrevCharEmpty || isEmptyInput) {
-      if (isCurrentTriggerAt && isPrevCharAt ) {
+    if (isPrevCharSpace || isPrevCharEmpty || isEmptyInput) { console.log("ENTERED: ", mentionTrigger);
+      if (1===2 && isCurrentTriggerAt && isPrevCharAt ) {
         if (isPrevCharAt) {
-          setTrigger("@");
-          setTrigger(/[@a-zA-Z0-9]/);
+          setTrigger(tr);
+          //setTrigger(/[@a-zA-Z0-9]/);
           setDataSource(interprets);
+          console.log("ENTERED: ", mentionTrigger);
         }
       } 
       if (isPrevCharSpace) {
@@ -139,10 +148,14 @@ console.log("\n---------------------initial END----------------------");
         setTrigger("");
         setDataSource([]);
       }
+      if ( prevPrevValue !== ')' && isPrevCharDot) {
+        setTrigger("");
+        setDataSource(filteredArray);
+      }
     } 
 
     if (allMentions.length === 0) {
-      setTrigger("@");
+      setTrigger(tr);
       //setTrigger(/./);
       setDataSource(interprets);
     }
@@ -440,7 +453,8 @@ const extractMentions = (input) => {
   };
   */
 
-  const displayTransform = (id, display) => `@${display}`;
+  const noCharTrigger = allMentions.length > 0 ? mentionTrigger: "";
+  const charTrigger = mentionTrigger;
   
   return (
     <div className="single-line">
@@ -454,23 +468,30 @@ const extractMentions = (input) => {
         style={defaultStyle}
       >
         <Mention 
-         trigger={allMentions.length > 0 ? mentionTrigger: ""}
+         trigger={mentionTrigger}
          data={data} 
          onAdd={onAddMention}
          style={defaultMentionStyle}
-         
          />
-         
+         <Mention
+          markup="@[__display__](type2:__id__)"
+          trigger={"a"}
+          data={inputData2}
+          onAdd={onAddMention}
+          style={{ backgroundColor: '#d1c4e9' }}
+        />
       </MentionsInput>
+
+      <MyDraftJSComponent/>
       
       
       {/* <div dangerouslySetInnerHTML={{ __html: htmlContent }} /> */}
-      {/*
+      {
       <JsonDisplay 
         data={data}
         selectedItem={mentions.value}
       />
-      */}
+      }
       
       {/*<AutoComplete data={mockUsers} onSelect={() => {}}/>*/}
     </div>

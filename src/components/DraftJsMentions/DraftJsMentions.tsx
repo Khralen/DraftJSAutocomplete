@@ -56,8 +56,9 @@ import React, {
           onOpenChange={onOpenChange}
           suggestions={suggestions}
           onSearchChange={onSearchChange}
-          onAddMention={() => {
+          onAddMention={(mention) => {
             // get the mention object selected
+            
           }}
         />
       </div>

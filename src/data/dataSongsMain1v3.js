@@ -15,7 +15,7 @@ const inputData = [
               "type" : "song",
               "children": [{
                 "id":"test.01",
-                "display":"test-01",
+                "display":"test-01-1348635g4sg4sd5g4s5",
                 "type" : "test",
                 "children": []
               }]
