@@ -8,6 +8,8 @@ import { convertToRaw } from "draft-js";
 import mentions from "./mentions1";
 //import pluginStyles from "../node_modules/draft-js-mention-plugin/lib/plugin.css";
 import data from "./data.json";
+import data3 from "./data3";
+
 
 export default class SimpleMentionEditor extends Component {
   constructor(props) {
@@ -17,7 +19,7 @@ export default class SimpleMentionEditor extends Component {
 
     this.state = {
       editorState: EditorState.createEmpty(),
-      suggestions: props.inputData // použij inputData nebo fallback na původní data
+      suggestions: props.inputData || data3 // použij inputData nebo fallback na původní data
     };
   }
 /*
@@ -34,7 +36,7 @@ export default class SimpleMentionEditor extends Component {
 
   onSearchChange = ({ value }) => {
     this.setState({
-      suggestions: this.props.inputData || data //defaultSuggestionsFilter(value, data) //mentions
+      suggestions: this.props.inputData || data3 //defaultSuggestionsFilter(value, data) //mentions
     });
   };
 
@@ -52,6 +54,8 @@ export default class SimpleMentionEditor extends Component {
 
     return JSON.stringify(raw, null, 2);
   }
+
+  
 
   render() {
     const { MentionSuggestions } = this.mentionPlugin;
@@ -81,3 +85,4 @@ export default class SimpleMentionEditor extends Component {
     );
   }
 }
+

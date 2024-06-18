@@ -454,6 +454,20 @@ const extractMentions = (input) => {
   };
   */
 
+  const transformData = (dataIn) => {
+    return dataIn.map(item => {
+        return {
+            code: item.id,
+            name: item.display,
+            type: item.type
+        };
+    });
+  };
+  
+  const transformedData = transformData(filteredArray);
+  
+  console.log("JSON: ", JSON.stringify(transformedData, null, 2));
+
   const noCharTrigger = allMentions.length > 0 ? mentionTrigger: "";
   const charTrigger = mentionTrigger;
   
@@ -483,7 +497,7 @@ const extractMentions = (input) => {
         />
       </MentionsInput>
 
-      <MyEditor inputData = {""}/>
+      <MyEditor inputData = {transformedData}/>
       
       
       {/* <div dangerouslySetInnerHTML={{ __html: htmlContent }} /> */}
