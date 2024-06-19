@@ -50,6 +50,24 @@ useEffect (() => {
 
 console.log("\n---------------------initial END----------------------");
 
+const allMentions = useMemo( ()=> {
+  let a = value.split(/[@]/);
+  a = a.filter((a) => a.startsWith("[") && a.includes("]"))
+  const arr = a.map((a)=>{
+    if(!a.startsWith("[")) return null;
+    const i1 = a.indexOf("]");
+    const i2 = a.indexOf("(");
+    const i3 = a.indexOf(")");
+    if(!(i1+1 === i2 && i2+1<i3 && i1>1)) return null;
+    const result = a.substring(i2+1,i3);
+    setMentions(result);
+    if (value.includes(".")) return result; 
+    return result;
+  });
+  return arr.filter(a => a);
+},[value])
+
+
 const transformData = (dataIn) => {
   return dataIn.map(item => {
       return {
@@ -59,6 +77,18 @@ const transformData = (dataIn) => {
       };
   });
 };
+
+useEffect (() => {
+  transformedData = transformData(data);
+}, []);
+
+useEffect (() => {
+  //transformedData = transformData(data);
+  if (allMentions.length > 0 && data.length > 0) {
+    transformedData = (Array.isArray(allMentions) && allMentions != null)? transformData(data): transformedData;
+  }
+
+}, [allMentions.length]);
 
 
   const onChange = (e, newValue, newPlainTextValue, mentions) => {
@@ -185,7 +215,7 @@ const transformData = (dataIn) => {
       }
     }
 
-    transformedData = transformData(data);
+    //transformedData = transformData(data);
     console.log("---------------------onChange END----------------------");
   };
   
@@ -206,22 +236,7 @@ const extractMentions = (input) => {
 };
   
 
-  const allMentions = useMemo( ()=> {
-    let a = value.split(/[@]/);
-    a = a.filter((a) => a.startsWith("[") && a.includes("]"))
-    const arr = a.map((a)=>{
-      if(!a.startsWith("[")) return null;
-      const i1 = a.indexOf("]");
-      const i2 = a.indexOf("(");
-      const i3 = a.indexOf(")");
-      if(!(i1+1 === i2 && i2+1<i3 && i1>1)) return null;
-      const result = a.substring(i2+1,i3);
-      setMentions(result);
-      if (value.includes(".")) return result; 
-      return result;
-    });
-    return arr.filter(a => a);
-  },[value])
+
   
   
 
@@ -414,7 +429,7 @@ const extractMentions = (input) => {
     }
     setFilteredArray(dataArray);
     console.log("\n1- allMentions-1-lastTypedItem-5 pt: ", lastTypedItem);
-    transformedData = transformData(data);
+    //transformedData = transformData(data);
 
   }, [allMentions.length]); //allMentions, mentions, data
 
@@ -514,7 +529,7 @@ const extractMentions = (input) => {
         />
       </MentionsInput>
 
-      <MyEditor inputData = {transformedData}/>
+      <MyEditor inputData = {transformedData? transformedData: inputData[0]}/>
       
       
       {/* <div dangerouslySetInnerHTML={{ __html: htmlContent }} /> */}
