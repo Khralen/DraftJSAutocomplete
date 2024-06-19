@@ -14,6 +14,8 @@ import JsonDisplay from "./JsonDisplay2.js";
 import inputData from "../data/dataSongsMain1v3.js";
 import inputData2 from "../data/dataSongs50Interprets.js";
 
+var transformedData;
+
 const SingleLine = () => {
   const [interprets, setInterprets] = useState([]);
   const [filteredArray, setFilteredArray] = useState([]);
@@ -47,6 +49,17 @@ useEffect (() => {
 }, []);
 
 console.log("\n---------------------initial END----------------------");
+
+const transformData = (dataIn) => {
+  return dataIn.map(item => {
+      return {
+          code: item.id,
+          name: item.display,
+          type: item.type
+      };
+  });
+};
+
 
   const onChange = (e, newValue, newPlainTextValue, mentions) => {
     console.log("\n---------------------onChange START----------------------");
@@ -171,6 +184,8 @@ console.log("\n---------------------initial END----------------------");
         setMentions(mentions.pop());
       }
     }
+
+    transformedData = transformData(data);
     console.log("---------------------onChange END----------------------");
   };
   
@@ -399,6 +414,7 @@ const extractMentions = (input) => {
     }
     setFilteredArray(dataArray);
     console.log("\n1- allMentions-1-lastTypedItem-5 pt: ", lastTypedItem);
+    transformedData = transformData(data);
 
   }, [allMentions.length]); //allMentions, mentions, data
 
@@ -454,6 +470,7 @@ const extractMentions = (input) => {
   };
   */
 
+  /*
   const transformData = (dataIn) => {
     return dataIn.map(item => {
         return {
@@ -463,8 +480,8 @@ const extractMentions = (input) => {
         };
     });
   };
-  
-  const transformedData = transformData(filteredArray);
+  */
+  //const transformedData = transformData(filteredArray);
   
   console.log("JSON: ", JSON.stringify(transformedData, null, 2));
 
